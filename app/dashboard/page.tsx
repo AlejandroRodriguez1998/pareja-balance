@@ -117,9 +117,10 @@ export default function DashboardPage() {
                     <div className="card-body text-white d-flex justify-content-between align-items-center">
                       <div className="text-start">
                         <div className="fw-semibold text-capitalize">{e.description}</div>
-                        <small className="text-muted white-important">
-                          Total: {e.total.toFixed(2)} € | Alejandro: {e.pagadoAlec.toFixed(2)} € | Mario:{' '}
-                          {e.pagadoPareja.toFixed(2)} €
+                        <small className="text-muted white-important d-block text-start">
+                          Total: {e.total.toFixed(2)} € <br />
+                          Alejandro: {e.pagadoAlec.toFixed(2)} € <br />
+                          Mario: {e.pagadoPareja.toFixed(2)} €
                         </small>
                       </div>
                       <span

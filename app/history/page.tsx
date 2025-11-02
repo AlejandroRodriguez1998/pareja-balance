@@ -97,8 +97,9 @@ export default function HistoryPage() {
                       <div>
                         <div className="fw-semibold text-capitalize">{e.description}</div>
                         <small className="text-secondary white-important">
-                          Total: {(e.total ?? 0).toFixed(2)} € | Alejandro: {(e.pagadoAlec ?? 0).toFixed(2)} € | Mario:{' '}
-                          {(e.pagadoPareja ?? 0).toFixed(2)} €
+                          Total: {(e.total ?? 0).toFixed(2)} € <br />
+                          Alejandro: {(e.pagadoAlec ?? 0).toFixed(2)} € <br />
+                          Mario: {(e.pagadoPareja ?? 0).toFixed(2)} €
                         </small>
                       </div>
                       <span
