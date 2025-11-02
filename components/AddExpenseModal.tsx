@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { db, auth } from '@/lib/firebase';
+import { getUserPairId } from '@/lib/pairs';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 export default function AddExpenseModal({ show, onHide }: { show: boolean; onHide: () => void }) {
@@ -26,13 +27,17 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
       return alert('La suma de los pagos no coincide con el total.');
 
     try {
+      const pairId = await getUserPairId(user.uid);
+      if (!pairId) return alert('No se encontró una pareja asociada.');
+
       setSaving(true);
       await addDoc(collection(db, 'expenses'), {
+        pairId,
         user_id: user.uid,
         description: descripcion.trim(),
         total: totalNum,
         pagadoAlec: alecNum,
-        pagadoPareja: parejaNum,
+        pagadoMario: parejaNum,
         date: serverTimestamp(),
       });
       setDescripcion('');
