@@ -2,7 +2,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #352f2f;
 }
 
 @theme inline {
@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #352f2f;
     --foreground: #ededed;
   }
 }
@@ -23,4 +23,18 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.white-important {
+  color: white !important;
+}
+
+.custom-modal-bg {
+  background-color: #1e1e1e !important; /* oscuro */
+  color: white;
+  border-radius: 10px;
+}
+
+.text-light-50 {
+  color: rgba(255, 255, 255, 0.6);
 }

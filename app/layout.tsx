@@ -1,30 +1,30 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
-import type { Metadata } from 'next';
-import Nav from '@/component/Nav';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Pareja Balance',
-  description: 'Contabilidad de pareja sencilla',
+  description: 'Contabilidad sencilla en pareja',
 };
 
-export const viewport = {
-  themeColor: '#3b82f6',
-};
+export const viewport = { themeColor: '#352f2f' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
-        {/* 👇 Enlace explícito al manifest */}
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/icons/icon-192.png" />
+        <meta name="theme-color" content="#1e1e1e" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="icon" href="/icon-192x192.png" />
+        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="Balance" />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="min-h-screen bg-neutral-50">
-        <Nav />
-        <main className="max-w-3xl mx-auto px-4 py-6">
-          {children}
-        </main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

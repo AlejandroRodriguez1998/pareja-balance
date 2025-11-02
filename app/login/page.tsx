@@ -20,7 +20,7 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  const signUp = async () => {
+  /*const signUp = async () => {
     try {
       setLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
@@ -28,15 +28,39 @@ export default function LoginPage() {
     } catch (e: any) {
       alert(e.message);
     } finally { setLoading(false); }
-  };
+  };*/
 
   return (
-    <div className="max-w-sm mx-auto mt-16 bg-white p-6 rounded shadow">
-      <h1 className="text-xl font-semibold mb-4">Iniciar sesión</h1>
-      <input className="input mb-2" placeholder="Email" onChange={e=>setEmail(e.target.value)} />
-      <input className="input mb-4" placeholder="Contraseña" type="password" onChange={e=>setPassword(e.target.value)} />
-      <button disabled={loading} onClick={signIn} className="btn-primary w-full mb-2">Entrar</button>
-      <button disabled={loading} onClick={signUp} className="btn-ghost w-full">Crear cuenta</button>
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
+      <div className="card shadow-lg p-4 border-0 bg-dark text-white" style={{ width: '22rem' }}>
+        <h1 className="text-center mb-4 fw-semibold">Iniciar sesión</h1>
+
+        <input
+          type="email"
+          className="form-control mb-3 bg-secondary text-white border-0"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          className="form-control mb-4 bg-secondary text-white border-0"
+          placeholder="Contraseña"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          disabled={loading}
+          onClick={signIn}
+          className="btn btn-primary w-100 fw-semibold"
+        >
+          Entrar
+        </button>
+
+        {/* <button disabled={loading} onClick={signUp} className="btn btn-outline-light w-100 mt-2">
+          Crear cuenta
+        </button> */}
+      </div>
     </div>
   );
 }

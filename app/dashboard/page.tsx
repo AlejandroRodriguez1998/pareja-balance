@@ -1,74 +1,152 @@
 'use client';
-import AuthGuard from '@/component/AuthGuard';
-import { db } from '@/lib/firebase';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import TopNav from '@/components/TopNav';
+import BottomNav from '@/components/BottomNav';
+import Link from 'next/link';
+import { DistributeVertical } from 'react-bootstrap-icons';
 
 type Expense = {
-  id?: string;
+  id: string;
   description: string;
-  aportado_alec: number;
-  aportado_pareja: number;
-  date: string; // ISO
+  total: number;
+  pagadoAlec: number;
+  pagadoPareja: number;
+  date?: { seconds: number };
 };
 
 export default function DashboardPage() {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [totals, setTotals] = useState({ alec: 0, pareja: 0 });
+  const [balance, setBalance] = useState(0);
+  const [totalAlec, setTotalAlec] = useState(0);
+  const [totalMario, setTotalMario] = useState(0);
+  const [lastExpenses, setLastExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const q = query(collection(db, 'expenses'), orderBy('date', 'desc'));
-      const snap = await getDocs(q);
-      const rows: Expense[] = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
-      setExpenses(rows);
+    const q = query(collection(db, 'expenses'), orderBy('date', 'desc'));
+    const unsub = onSnapshot(q, (snap) => {
+      let totalAlecTemp = 0;
+      let totalMarioTemp = 0;
+      const allExpenses: Expense[] = [];
 
-      let a = 0, p = 0;
-      for (const e of rows) {
-        a += Number(e.aportado_alec || 0);
-        p += Number(e.aportado_pareja || 0);
-      }
-      setTotals({ alec: a, pareja: p });
-    })();
+      snap.forEach((d) => {
+        const e = d.data() as any;
+        totalAlecTemp += Number(e.pagadoAlec || 0);
+        totalMarioTemp += Number(e.pagadoPareja || 0);
+        allExpenses.push({
+          id: d.id,
+          description: e.description,
+          total: Number(e.total || 0),
+          pagadoAlec: Number(e.pagadoAlec || 0),
+          pagadoPareja: Number(e.pagadoPareja || 0),
+          date: e.date,
+        });
+      });
+
+      setTotalAlec(totalAlecTemp);
+      setTotalMario(totalMarioTemp);
+      setBalance(totalAlecTemp - totalMarioTemp);
+      setLastExpenses(allExpenses.slice(0, 5));
+    });
+    return () => unsub();
   }, []);
 
-  const balance = totals.alec - totals.pareja;
-
   return (
-    <AuthGuard>
-      <h1 className="text-2xl font-bold mb-4">💰 Balance actual</h1>
-      {balance > 0 && <p>Tu pareja te debe {balance.toFixed(2)} €</p>}
-      {balance < 0 && <p>Tú le debes {Math.abs(balance).toFixed(2)} €</p>}
-      {balance === 0 && <p>Estáis a mano ✅</p>}
+    <>
+      <TopNav title="Pareja Balance" />
 
-      <div className="mt-6 grid grid-cols-2 gap-4">
-        <div className="p-4 bg-white rounded shadow">Tú has pagado: <b>{totals.alec.toFixed(2)} €</b></div>
-        <div className="p-4 bg-white rounded shadow">Tu pareja ha pagado: <b>{totals.pareja.toFixed(2)} €</b></div>
+      <div className="container mt-4">
+        <div className="card shadow-sm bg-dark border-0 mb-4">
+          <div className="card-body text-center text-white">
+            <h5 className="fw-bold mb-2">Estado actual</h5>
+
+            {balance > 0 && (
+              <p className="mb-0">
+                Tu pareja te debe{' '}
+                <b className="text-success">{balance.toFixed(2)} €</b>
+              </p>
+            )}
+
+            {balance < 0 && (
+              <p className="mb-0">
+                Tú le debes{' '}
+                <b className="text-danger">{Math.abs(balance).toFixed(2)} €</b>
+              </p>
+            )}
+
+            {balance === 0 && (
+              <p className="mb-0">
+                <b className="text-white">Estáis a mano</b>
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
-      <h2 className="text-lg font-semibold mt-8 mb-3">Últimos gastos</h2>
-      <div className="bg-white rounded shadow overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-neutral-100 text-sm">
-            <tr>
-              <th className="px-3 py-2">Fecha</th>
-              <th className="px-3 py-2">Descripción</th>
-              <th className="px-3 py-2">Alec (€)</th>
-              <th className="px-3 py-2">Pareja (€)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.slice(0,10).map((e) => (
-              <tr key={e.id} className="border-t">
-                <td className="px-3 py-2">{new Date(e.date).toLocaleDateString()}</td>
-                <td className="px-3 py-2">{e.description}</td>
-                <td className="px-3 py-2 text-green-700">{e.aportado_alec}</td>
-                <td className="px-3 py-2 text-pink-700">{e.aportado_pareja}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="container mt-1 mb-5 pb-5">
+        {/* 💳 Totales pagados */}
+        <div className="row g-3 mb-3 text-center">
+          <div className="col-6">
+            <div className="card bg-dark shadow-sm border-0">
+              <div className="card-body text-white">
+                <h6 className="card-title fw-bold mb-1">Alejandro</h6>
+                <p className="card-text fs-5 mb-0">{totalAlec.toFixed(2)} €</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="card bg-dark shadow-sm border-0">
+              <div className="card-body text-white">
+                <h6 className="card-title fw-bold mb-1">Mario</h6>
+                <p className="card-text fs-5 mb-0">{totalMario.toFixed(2)} €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-dark shadow-sm border-0">
+          <h5 className="fw-bold mt-4 text-center text-white">Últimos gastos</h5>
+          {lastExpenses.length === 0 ? (
+            <p className="text-muted text-center">Aún no hay gastos registrados.</p>
+          ) : (
+            <div className="d-flex flex-column gap-2">
+              {lastExpenses.map((e) => (
+                <div key={e.id} className="card bg-transparent shadow-sm border m-2">
+                  <div className="card-body text-white d-flex justify-content-between align-items-center">
+                    <div className="text-start">
+                      <div className="fw-semibold text-capitalize">{e.description}</div>
+                      <small className="text-muted white-important">
+                        Total: {e.total.toFixed(2)} € | Alejandro: {e.pagadoAlec.toFixed(2)} € | Mario:{' '}
+                        {e.pagadoPareja.toFixed(2)} €
+                      </small>
+                    </div>
+                    <span
+                      className={`badge px-3 py-2 ${
+                        e.pagadoAlec - e.pagadoPareja >= 0
+                          ? 'bg-success-subtle text-success'
+                          : 'bg-danger-subtle text-danger'
+                      }`}
+                    >
+                      {e.pagadoAlec - e.pagadoPareja > 0 ? '+' : ''}
+                      {(e.pagadoAlec - e.pagadoPareja).toFixed(2)} €
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* 🔘 Ver historial completo */}
+          <div className="text-center mt-4">
+            <Link href="/history" className="btn btn-outline-primary w-25 fw-semibold mb-4">
+              Ver todo el historial
+            </Link>
+          </div>
+        </div>
       </div>
-    </AuthGuard>
+
+      <BottomNav />
+    </>
   );
 }
