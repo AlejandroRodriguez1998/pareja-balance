@@ -1,21 +1,35 @@
 'use client';
-import { ReactNode, useEffect, useState } from 'react';
-import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
 
-export default function AuthGuard({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u) router.replace('/login');
-      else setReady(true);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthenticated(true);
+      } else {
+        router.push('/login');
+      }
+      setLoading(false);
     });
     return () => unsub();
   }, [router]);
 
-  if (!ready) return <div className="mt-10 text-center">Cargando...</div>;
+  if (loading) {
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white">
+        <h2 className="fw-bold">Pareja Balance</h2>
+        <div className="spinner-border text-light mt-3" role="status"></div>
+      </div>
+    );
+  }
+
+  if (!authenticated) return null;
   return <>{children}</>;
 }

@@ -4,6 +4,7 @@ import { db } from '@/lib/firebase';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
+import AuthGuard from '@/components/AuthGuard';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -73,57 +74,59 @@ export default function HistoryPage() {
 
   return (
     <>
-      <TopNav title="Historial" />
-      <div className="container mt-3 mb-5 pb-5">
-        {weeks.length === 0 ? (
-          <p className="text-center mt-5">Aún no hay gastos registrados.</p>
-        ) : (
-          weeks.map((week) => (
-            <div key={week.weekStart} className="mb-4">
-              <h5 className="fw-bold text-white mb-3">
-                Semana del{' '}
-                {dayjs(week.weekStart).format('D')} al {dayjs(week.weekEnd).format('D')} de{' '}
-                {dayjs(week.weekEnd).format('MMMM YYYY')}
-              </h5>
+      <AuthGuard>
+        <TopNav title="Historial" />
+        <div className="container mt-3 mb-5 pb-5">
+          {weeks.length === 0 ? (
+            <p className="text-center mt-5">Aún no hay gastos registrados.</p>
+          ) : (
+            weeks.map((week) => (
+              <div key={week.weekStart} className="mb-4">
+                <h5 className="fw-bold text-white mb-3">
+                  Semana del{' '}
+                  {dayjs(week.weekStart).format('D')} al {dayjs(week.weekEnd).format('D')} de{' '}
+                  {dayjs(week.weekEnd).format('MMMM YYYY')}
+                </h5>
 
-              <ul className="list-group mb-2">
-                {week.expenses.map((e) => (
-                  <li
-                    key={e.id}
-                    className="list-group-item bg-dark text-light d-flex justify-content-between align-items-center border-secondary"
-                  >
-                    <div>
-                      <div className="fw-semibold text-capitalize">{e.description}</div>
-                      <small className="text-secondary white-important">
-                        Total: {(e.total ?? 0).toFixed(2)} € | Alejandro: {(e.pagadoAlec ?? 0).toFixed(2)} € | Mario:{' '}
-                        {(e.pagadoPareja ?? 0).toFixed(2)} €
-                      </small>
-                    </div>
-                    <span
-                      className={`badge px-3 ${
-                        e.pagadoAlec - e.pagadoPareja >= 0
-                          ? 'bg-success-subtle text-success'
-                          : 'bg-danger-subtle text-danger'
-                      }`}
+                <ul className="list-group mb-2">
+                  {week.expenses.map((e) => (
+                    <li
+                      key={e.id}
+                      className="list-group-item bg-dark text-light d-flex justify-content-between align-items-center border-secondary"
                     >
-                      {e.pagadoAlec - e.pagadoPareja > 0 ? '+' : ''}
-                      {(e.pagadoAlec - e.pagadoPareja).toFixed(2)} €
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                      <div>
+                        <div className="fw-semibold text-capitalize">{e.description}</div>
+                        <small className="text-secondary white-important">
+                          Total: {(e.total ?? 0).toFixed(2)} € | Alejandro: {(e.pagadoAlec ?? 0).toFixed(2)} € | Mario:{' '}
+                          {(e.pagadoPareja ?? 0).toFixed(2)} €
+                        </small>
+                      </div>
+                      <span
+                        className={`badge px-3 ${
+                          e.pagadoAlec - e.pagadoPareja >= 0
+                            ? 'bg-success-subtle text-success'
+                            : 'bg-danger-subtle text-danger'
+                        }`}
+                      >
+                        {e.pagadoAlec - e.pagadoPareja > 0 ? '+' : ''}
+                        {(e.pagadoAlec - e.pagadoPareja).toFixed(2)} €
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-              <div className={`text-end fw-bold ${week.balance >= 0 ? 'text-success' : 'text-danger'}`}>
-                {week.balance >= 0 ? 'Saldo a favor: ' : 'Saldo en contra: '}
-                {week.balance.toFixed(2)} €
+                <div className={`text-end fw-bold ${week.balance >= 0 ? 'text-success' : 'text-danger'}`}>
+                  {week.balance >= 0 ? 'Saldo a favor: ' : 'Saldo en contra: '}
+                  {week.balance.toFixed(2)} €
+                </div>
+
+                <hr />
               </div>
-
-              <hr />
-            </div>
-          ))
-        )}
-      </div>
-      <BottomNav />
+            ))
+          )}
+        </div>
+        <BottomNav />
+      </AuthGuard>
     </>
   );
 }
