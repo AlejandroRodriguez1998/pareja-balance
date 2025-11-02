@@ -65,7 +65,7 @@ export default function HistoryPage() {
         });
 
         const grouped: Record<string, WeekGroup> = {};
-        const isAlec = user.email?.toLowerCase().includes('alec');
+        const isAlec = user.email?.toLowerCase().includes('alex');
 
         data.forEach((e) => {
           const fecha = e.date?.seconds ? dayjs.unix(e.date.seconds) : dayjs();

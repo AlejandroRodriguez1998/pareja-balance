@@ -66,7 +66,7 @@ export default function DashboardPage() {
         setTotalMario(totalMarioTemp);
 
         // Detectar quién soy para invertir el balance según el caso
-        const isAlec = user.email?.toLowerCase().includes('alec');
+        const isAlec = user.email?.toLowerCase().includes('alex');
         const calculatedBalance = isAlec
           ? totalAlecTemp - totalMarioTemp
           : totalMarioTemp - totalAlecTemp;
@@ -136,7 +136,7 @@ export default function DashboardPage() {
         <div className="card bg-dark shadow-sm border-0">
           <h5 className="fw-bold mt-4 text-center text-white">Últimos gastos</h5>
           {lastExpenses.length === 0 ? (
-            <p className="text-muted text-center">Aún no hay gastos registrados.</p>
+            <p className="text-muted white-important text-center">Aún no hay gastos registrados.</p>
           ) : (
             <div className="d-flex flex-column gap-2">
               {lastExpenses.map((e) => (
@@ -144,7 +144,7 @@ export default function DashboardPage() {
                   <div className="card-body text-white d-flex justify-content-between align-items-center">
                     <div className="text-start">
                       <div className="fw-semibold text-capitalize">{e.description}</div>
-                      <small className="text-muted d-block text-start">
+                      <small className="text-muted white-important d-block text-start">
                         Total: {e.total.toFixed(2)} € <br />
                         Alejandro: {e.pagadoAlec.toFixed(2)} € <br />
                         Mario: {e.pagadoMario.toFixed(2)} €
