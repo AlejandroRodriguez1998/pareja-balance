@@ -7,11 +7,17 @@ export default function BottomNav() {
   const path = usePathname();
 
   return (
-    <nav
-      className="navbar fixed-bottom justify-content-around"
+   <nav
+      className="navbar fixed-bottom justify-content-around py-2"
       style={{
         backgroundColor: 'rgb(30, 30, 30)',
         borderTop: '1px solid rgb(51, 51, 51)',
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)',
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1000,
       }}
     >
       {/* Inicio */}

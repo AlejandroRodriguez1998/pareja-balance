@@ -139,7 +139,7 @@ export default function DashboardPage() {
 
           {/* 🔘 Ver historial completo */}
           <div className="text-center mt-4">
-            <Link href="/history" className="btn btn-outline-primary w-25 fw-semibold mb-4">
+            <Link href="/history" className="btn btn-outline-primary w-100 fw-semibold mb-4">
               Ver todo el historial
             </Link>
           </div>
