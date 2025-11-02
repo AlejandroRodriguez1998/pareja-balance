@@ -2,11 +2,14 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Nav from '@/component/Nav';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Pareja Balance',
   description: 'Contabilidad de pareja sencilla',
-  manifest: '/manifest.json',
-  themeColor: '#000000ff',
+  manifest: '/manifest.json'
+};
+
+export const viewport = {
+  themeColor: '#000000ff'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
