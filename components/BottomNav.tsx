@@ -10,13 +10,15 @@ export default function BottomNav() {
    <nav
       className="navbar fixed-bottom justify-content-around py-2"
       style={{
-        backgroundColor: 'rgb(30, 30, 30)',
-        borderTop: '1px solid rgb(51, 51, 51)',
-        paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)',
         position: 'fixed',
+        bottom: 0,
         left: 0,
         right: 0,
-        bottom: 0,
+        paddingTop: '8px',
+        paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 3px)',
+        backgroundColor: '#1a1a1a',
+        color: '#ffffff',
+        borderTop: '1px solid #333',
         zIndex: 1000,
       }}
     >
