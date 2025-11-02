@@ -10,7 +10,6 @@ const withPWA = nextPWA({
 const nextConfig = {
   reactStrictMode: true,
   images: { domains: [] },
-  experimental: { turbo: true },
 };
 
 export default withPWA(nextConfig);
