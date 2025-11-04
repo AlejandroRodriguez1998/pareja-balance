@@ -23,9 +23,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
 
     if (isNaN(totalNum) || totalNum <= 0) return alert('Cantidad total inválida.');
     if (isNaN(alecNum) || isNaN(parejaNum)) return alert('Introduce valores numéricos.');
-    if (Math.abs(alecNum + parejaNum - totalNum) > 0.01)
-      return alert('La suma de los pagos no coincide con el total.');
-
+    
     try {
       const pairId = await getUserPairId(user.uid);
       if (!pairId) return alert('No se encontró una pareja asociada.');

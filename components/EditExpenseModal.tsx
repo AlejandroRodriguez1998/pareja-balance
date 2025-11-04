@@ -34,9 +34,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
     const marioNum = Number(pagadoMario)
     if (!descripcion.trim()) return alert('Añade una descripción.')
     if (isNaN(totalNum) || totalNum <= 0) return alert('Total inválido.')
-    if (Math.abs(alecNum + marioNum - totalNum) > 0.01)
-      return alert('La suma de ambos pagos no coincide con el total.')
-
+    
     try {
       setSaving(true)
       const ref = doc(db, 'expenses', expense.id)
