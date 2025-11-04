@@ -23,7 +23,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white">
-        <img src="/icon-192x192.png" alt="Logo" width="80" height="80" className="mb-3" />
+        <img src="/icon-sinFondo.png" alt="Logo" width="80" height="80" className="mb-3" />
         <h4 className="fw-bold">Pareja Balance</h4>
         <div className="spinner-border text-light mt-3" role="status"></div>
       </div>

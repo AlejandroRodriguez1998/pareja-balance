@@ -24,7 +24,6 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white">
-        <h2 className="fw-bold">Pareja Balance</h2>
         <div className="spinner-border text-light mt-3" role="status"></div>
       </div>
     );

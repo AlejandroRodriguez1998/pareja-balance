@@ -6,6 +6,7 @@ import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
+import EditExpenseModal from '@/components/EditExpenseModal';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -32,6 +33,7 @@ type WeekGroup = {
 export default function HistoryPage() {
   const [weeks, setWeeks] = useState<WeekGroup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -103,7 +105,6 @@ export default function HistoryPage() {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-light bg-dark">
         <div className="spinner-border text-light" role="status"></div>
-        <p className="mt-3">Cargando historial...</p>
       </div>
     );
   }
@@ -129,6 +130,8 @@ export default function HistoryPage() {
                     <li
                       key={e.id}
                       className="list-group-item bg-dark text-light d-flex justify-content-between align-items-center border-secondary"
+                      onClick={() => setSelectedExpense(e)}
+                      style={{ cursor: 'pointer' }}
                     >
                       <div>
                         <div className="fw-semibold text-capitalize">{e.description}</div>
@@ -151,6 +154,14 @@ export default function HistoryPage() {
                     </li>
                   ))}
                 </ul>
+
+                {selectedExpense && (
+                  <EditExpenseModal
+                    show={!!selectedExpense}
+                    expense={selectedExpense}
+                    onHide={() => setSelectedExpense(null)}
+                  />
+                )}
 
                 <div
                   className={`text-end fw-bold ${

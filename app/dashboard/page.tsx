@@ -7,6 +7,7 @@ import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
+import EditExpenseModal from '@/components/EditExpenseModal';
 
 type Expense = {
   id: string;
@@ -22,9 +23,11 @@ export default function DashboardPage() {
   const [totalAlec, setTotalAlec] = useState(0);
   const [totalMario, setTotalMario] = useState(0);
   const [lastExpenses, setLastExpenses] = useState<Expense[]>([]);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    
     const user = auth.currentUser;
     if (!user) return;
 
@@ -84,7 +87,6 @@ export default function DashboardPage() {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-light bg-dark">
         <div className="spinner-border text-light" role="status"></div>
-        <p className="mt-3">Cargando gastos...</p>
       </div>
     );
   }
@@ -93,7 +95,7 @@ export default function DashboardPage() {
     <AuthGuard>
       <TopNav title="Pareja Balance" />
 
-      <div className="container mt-4">
+      <div className="container mt-4 mb-5 pb-2">
         {/* 💰 Balance */}
         <div className="card shadow-sm bg-dark border-0 mb-4">
           <div className="card-body text-center text-white">
@@ -140,7 +142,7 @@ export default function DashboardPage() {
           ) : (
             <div className="d-flex flex-column gap-2">
               {lastExpenses.map((e) => (
-                <div key={e.id} className="card bg-transparent shadow-sm border m-2">
+                <div key={e.id} onClick={() => setSelectedExpense(e)} style={{cursor:'pointer'}}>
                   <div className="card-body text-white d-flex justify-content-between align-items-center">
                     <div className="text-start">
                       <div className="fw-semibold text-capitalize">{e.description}</div>
@@ -164,6 +166,14 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
+          )}
+
+          {selectedExpense && (
+            <EditExpenseModal
+              show={!!selectedExpense}
+              expense={selectedExpense}
+              onHide={() => setSelectedExpense(null)}
+            />
           )}
 
           <div className="text-center mt-4">
