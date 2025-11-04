@@ -107,7 +107,7 @@ export default function DashboardPage() {
             )}
             {balance < 0 && (
               <p className="mb-0">
-                Tú le debes <b className="text-danger">{Math.abs(balance).toFixed(2)} €</b>
+                Le debes a tu pareja <b className="text-danger">{Math.abs(balance).toFixed(2)} €</b>
               </p>
             )}
             {balance === 0 && <p className="mb-0"><b className="text-white">Estáis a mano ✅</b></p>}
