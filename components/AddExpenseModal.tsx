@@ -115,10 +115,6 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
               </Form.Group>
             </div>
           </div>
-
-          <Form.Text className="text-light-50">
-            La suma de ambos pagos debe coincidir con el total del gasto.
-          </Form.Text>
         </Form>
       </Modal.Body>
 
