@@ -8,11 +8,11 @@ export default function BottomNav() {
 
   return (
    <nav
-      className="navbar fixed-bottom justify-content-around py-2"
+      className="navbar fixed-bottom justify-content-around"
       style={{
         backgroundColor: 'rgb(30, 30, 30)',
         borderTop: '1px solid rgb(51, 51, 51)',
-        paddingBottom: 'max(env(safe-area-inset-bottom), 10px)',
+        paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 3px)',
         position: 'fixed',
         left: 0,
         right: 0,

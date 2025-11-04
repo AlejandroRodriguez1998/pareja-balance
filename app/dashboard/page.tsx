@@ -95,7 +95,7 @@ export default function DashboardPage() {
     <AuthGuard>
       <TopNav title="Pareja Balance" />
 
-      <div className="container mt-4 mb-5 pb-2">
+      <div className="container mt-4 mb-5 pb-5">
         {/* 💰 Balance */}
         <div className="card shadow-sm bg-dark border-0 mb-4">
           <div className="card-body text-center text-white">
@@ -142,7 +142,7 @@ export default function DashboardPage() {
           ) : (
             <div className="d-flex flex-column gap-2">
               {lastExpenses.map((e) => (
-                <div key={e.id} onClick={() => setSelectedExpense(e)} style={{cursor:'pointer'}}>
+                <div key={e.id} onClick={() => setSelectedExpense(e)} style={{cursor:'pointer'}} className="card bg-transparent shadow-sm border m-2">
                   <div className="card-body text-white d-flex justify-content-between align-items-center">
                     <div className="text-start">
                       <div className="fw-semibold text-capitalize">{e.description}</div>
