@@ -23,12 +23,18 @@ export default function HomePage() {
   if (loading) {
     return (
      <div className="d-flex justify-content-center align-items-center vh-100 bg-dark text-white">
-        <div className="card shadow-lg text-center p-4 border-0" style={{ width: '18rem', backgroundColor: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(6px)',}}>
-          <img src="/icon-sinFondo.png" alt="Logo" width="80" height="80" className="mx-auto mb-3" style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.3))' }}/>
+        <div className="card shadow-lg border-0 d-flex justify-content-center align-items-center text-center p-4"
+        style={{width: '18rem',height: '20rem', backgroundColor: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(6px)',}}>
+          <img src="/icon-96x96.png" alt="Logo" width="80" height="80" className="mb-3" style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.3))' }}/>
+
           <h4 className="fw-bold mb-2">Pareja Balance</h4>
-          <p className="text-light mb-3" style={{ fontSize: '0.95rem', opacity: 0.8 }}>
-            Bienvenido de nuevo 
+
+          <p className="text-light mb-3"
+            style={{ fontSize: '0.95rem', opacity: 0.8 }}
+          >
+            Bienvenido de nuevo
           </p>
+
           <div className="spinner-border text-light mt-2" role="status"></div>
         </div>
       </div>

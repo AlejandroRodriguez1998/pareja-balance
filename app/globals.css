@@ -27,6 +27,10 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
+html {
+  background: #1e1e1e !important;
+}
+
 body {
   background: #352f2f !important;
   color: #ededed;
