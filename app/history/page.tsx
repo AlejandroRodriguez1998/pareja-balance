@@ -120,9 +120,8 @@ export default function HistoryPage() {
             weeks.map((week) => (
               <div key={week.weekStart} className="mb-4">
                 <h5 className="fw-bold text-white mb-3">
-                  Semana del {dayjs(week.weekStart).format('D')} al{' '}
-                  {dayjs(week.weekEnd).format('D')} de{' '}
-                  {dayjs(week.weekEnd).format('MMMM YYYY')}
+                  Semana del {dayjs(week.weekStart).format('DD/MM')} al{' '}
+                  {dayjs(week.weekEnd).format('DD/MM/YYYY')}
                 </h5>
 
                 <ul className="list-group mb-2">

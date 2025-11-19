@@ -10,6 +10,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
   const [total, setTotal] = useState('');
   const [pagadoAlec, setPagadoAlec] = useState('');
   const [pagadoPareja, setPagadoPareja] = useState('');
+  const [dividir, setDividir] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const handleGuardar = async () => {
@@ -18,11 +19,16 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
     if (!descripcion.trim()) return alert('Añade una descripción.');
 
     const totalNum = Number(total);
-    const alecNum = Number(pagadoAlec);
-    const parejaNum = Number(pagadoPareja);
+    let alecNum = Number(pagadoAlec);
+    let parejaNum = Number(pagadoPareja);
 
     if (isNaN(totalNum) || totalNum <= 0) return alert('Cantidad total inválida.');
     if (isNaN(alecNum) || isNaN(parejaNum)) return alert('Introduce valores numéricos.');
+
+    if (dividir) {
+      alecNum = Number((alecNum / 2).toFixed(2));
+      parejaNum = Number((parejaNum / 2).toFixed(2));
+    }
     
     try {
       const pairId = await getUserPairId(user.uid);
@@ -50,6 +56,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
       setSaving(false);
     }
   };
+  
 
   return (
     <Modal
@@ -115,6 +122,24 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
               </Form.Group>
             </div>
           </div>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-white mb-1">
+              Dividir entre ambos:
+            </Form.Label>
+
+            <div className="form-check form-switch">
+              <Form.Check
+                type="switch"
+                id="switch-dividir"
+                checked={dividir}
+                onChange={(e) => setDividir(e.target.checked)}
+                className="text-white"
+                label=""   // ← sin texto al lado
+                disabled={saving}
+              />
+            </div>
+          </Form.Group>
         </Form>
       </Modal.Body>
 

@@ -27,7 +27,7 @@ export default function HomePage() {
         style={{width: '18rem',height: '20rem', backgroundColor: 'rgba(255, 255, 255, 0.05)', backdropFilter: 'blur(6px)',}}>
           <img src="/icon-96x96.png" alt="Logo" width="80" height="80" className="mb-3" style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.3))' }}/>
 
-          <h4 className="fw-bold mb-2">Pareja Balance</h4>
+          <h4 className="fw-bold text-light mb-2">Pareja Balance</h4>
 
           <p className="text-light mb-3"
             style={{ fontSize: '0.95rem', opacity: 0.8 }}
