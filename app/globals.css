@@ -46,3 +46,7 @@ body {
 .text-light-50 {
   color: rgba(255, 255, 255, 0.6);
 }
+
+.modal-header .btn-close {
+  filter: invert(1);
+}

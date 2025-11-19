@@ -76,7 +76,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             <Form.Label className="text-white">Descripción:</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ej. Compra supermercado"
+              placeholder="Ejemplo: Supermercado"
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
               disabled={saving}
@@ -123,22 +123,16 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             </div>
           </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label className="text-white mb-1">
-              Dividir entre ambos:
-            </Form.Label>
-
-            <div className="form-check form-switch">
-              <Form.Check
-                type="switch"
-                id="switch-dividir"
-                checked={dividir}
-                onChange={(e) => setDividir(e.target.checked)}
-                className="text-white"
-                label=""   // ← sin texto al lado
-                disabled={saving}
-              />
-            </div>
+          <Form.Group className="mb-3 ps-3">
+            <Form.Check
+              type="switch"
+              id="switch-dividir"
+              label="Dividir entre dos"
+              checked={dividir}
+              onChange={(e) => setDividir(e.target.checked)}
+              className="text-white ps-4"
+              disabled={saving}
+            />
           </Form.Group>
         </Form>
       </Modal.Body>
