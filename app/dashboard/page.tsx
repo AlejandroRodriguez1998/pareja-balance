@@ -34,7 +34,7 @@ export default function DashboardPage() {
     // Buscar la pareja asociada a este usuario
     getUserPairId(user.uid).then((pairId) => {
       if (!pairId) {
-        alert('No se encontró una pareja asociada a este usuario.');
+        alert('No se encontro una pareja asociada a este usuario.');
         setLoading(false);
         return;
       }
@@ -68,7 +68,7 @@ export default function DashboardPage() {
         setTotalAlec(totalAlecTemp);
         setTotalMario(totalMarioTemp);
 
-        // Detectar quién soy para invertir el balance según el caso
+        // Detectar quien soy para invertir el balance segun el caso
         const isAlec = user.email?.toLowerCase().includes('alex');
         const calculatedBalance = isAlec
           ? totalAlecTemp - totalMarioTemp

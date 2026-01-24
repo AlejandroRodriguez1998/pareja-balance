@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HouseFill, ClockHistory } from 'react-bootstrap-icons';
+import { HouseFill, ClockHistory, ListUl } from 'react-bootstrap-icons';
 
 export default function BottomNav() {
   const path = usePathname();
@@ -42,6 +42,17 @@ export default function BottomNav() {
         >
           <ClockHistory size={22} />
           <div style={{ fontSize: '0.75rem' }}>Historial</div>
+        </Link>
+
+        {/* Comidas */}
+        <Link
+          href="/meals"
+          className={`nav-link d-flex flex-column align-items-center ${
+            path === '/meals' ? 'text-primary' : 'text-light'
+          }`}
+        >
+          <ListUl size={22} />
+          <div style={{ fontSize: '0.75rem' }}>Comidas</div>
         </Link>
       </nav>
     </div>
