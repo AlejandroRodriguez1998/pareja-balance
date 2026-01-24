@@ -110,6 +110,14 @@ body {
   justify-content: center;
 }
 
+.meal-edit-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
 .meal-day-picker {
   display: flex;
   gap: 8px;

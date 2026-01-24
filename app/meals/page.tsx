@@ -141,11 +141,11 @@ export default function MealsPage() {
                                     value={editingMealName}
                                     onChange={(e) => setEditingMealName(e.target.value)}
                                   />
-                                  <div className="btn-group btn-group-sm">
-                                    <button className="btn btn-success" onClick={handleSaveMeal}>
+                                  <div className="meal-edit-actions">
+                                    <button className="btn btn-success btn-sm" onClick={handleSaveMeal}>
                                       Guardar
                                     </button>
-                                    <button className="btn btn-outline-light" onClick={handleCancelEditMeal}>
+                                    <button className="btn btn-outline-light btn-sm" onClick={handleCancelEditMeal}>
                                       Cancelar
                                     </button>
                                   </div>
