@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { HouseFill, ClockHistory, EggFried } from 'react-bootstrap-icons';
+import { HouseDoorFill, ClockFill, EggFried } from 'react-bootstrap-icons';
 
 export default function BottomNav() {
   const path = usePathname();
@@ -29,7 +29,7 @@ export default function BottomNav() {
             path === '/dashboard' ? 'text-primary' : 'text-light'
           }`}
         >
-          <HouseFill size={22} />
+          <HouseDoorFill size={22} />
           <div style={{ fontSize: '0.75rem' }}>Inicio</div>
         </Link>
 
@@ -40,7 +40,7 @@ export default function BottomNav() {
             path === '/history' ? 'text-primary' : 'text-light'
           }`}
         >
-          <ClockHistory size={22} />
+          <ClockFill size={22} />
           <div style={{ fontSize: '0.75rem' }}>Historial</div>
         </Link>
 

@@ -118,6 +118,18 @@ body {
   margin-top: 8px;
 }
 
+.meal-item-button {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.meal-item-button:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .meal-day-picker {
   display: flex;
   gap: 8px;

@@ -1,13 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
-import { collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
 import AddMealModal from '@/components/AddMealModal';
-import { PencilSquare, Trash } from 'react-bootstrap-icons';
+import EditMealModal from '@/components/EditMealModal';
 
 type Meal = {
   id: string;
@@ -19,9 +19,8 @@ type Meal = {
 export default function MealsPage() {
   const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   const [meals, setMeals] = useState<Meal[]>([]);
-  const [editingMealId, setEditingMealId] = useState<string | null>(null);
-  const [editingMealName, setEditingMealName] = useState('');
   const [showAddMeal, setShowAddMeal] = useState(false);
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,33 +70,6 @@ export default function MealsPage() {
     return 0;
   };
 
-  const handleStartEditMeal = (meal: Meal) => {
-    setEditingMealId(meal.id);
-    setEditingMealName(meal.name);
-  };
-
-  const handleCancelEditMeal = () => {
-    setEditingMealId(null);
-    setEditingMealName('');
-  };
-
-  const handleSaveMeal = async () => {
-    if (!editingMealId) return;
-    const name = editingMealName.trim();
-    if (!name) return alert('Anade un nombre para la comida.');
-    await updateDoc(doc(db, 'meals', editingMealId), {
-      name,
-      updatedAt: new Date(),
-    });
-    handleCancelEditMeal();
-  };
-
-  const handleDeleteMeal = async (meal: Meal) => {
-    const confirmed = confirm('Seguro que deseas eliminar esta comida?');
-    if (!confirmed) return;
-    await deleteDoc(doc(db, 'meals', meal.id));
-  };
-
   if (loading) {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-light bg-dark">
@@ -110,6 +82,11 @@ export default function MealsPage() {
     <AuthGuard>
       <TopNav title="Comidas" onAddClick={() => setShowAddMeal(true)} />
       <AddMealModal show={showAddMeal} onHide={() => setShowAddMeal(false)} />
+      <EditMealModal
+        show={!!selectedMeal}
+        meal={selectedMeal}
+        onHide={() => setSelectedMeal(null)}
+      />
       <div className="container mt-4 mb-5 pb-5">
         <div className="card shadow-sm bg-dark border-0 mb-4">
           <div className="card-body">
@@ -133,45 +110,14 @@ export default function MealsPage() {
                       ) : (
                         <div className="d-flex flex-column gap-2">
                           {dayMeals.map((meal) => (
-                            <div className="meal-item" key={meal.id}>
-                              {editingMealId === meal.id ? (
-                                <>
-                                  <input
-                                    className="form-control form-control-sm meal-edit-input"
-                                    value={editingMealName}
-                                    onChange={(e) => setEditingMealName(e.target.value)}
-                                  />
-                                  <div className="meal-edit-actions">
-                                    <button className="btn btn-success btn-sm" onClick={handleSaveMeal}>
-                                      Guardar
-                                    </button>
-                                    <button className="btn btn-outline-light btn-sm" onClick={handleCancelEditMeal}>
-                                      Cancelar
-                                    </button>
-                                  </div>
-                                </>
-                              ) : (
-                                <>
-                                  <span className="meal-item-name">{meal.name}</span>
-                                  <div className="meal-actions">
-                                    <button
-                                      className="btn btn-outline-light btn-sm meal-icon-button"
-                                      onClick={() => handleStartEditMeal(meal)}
-                                      aria-label="Editar"
-                                    >
-                                      <PencilSquare size={16} />
-                                    </button>
-                                    <button
-                                      className="btn btn-outline-danger btn-sm meal-icon-button"
-                                      onClick={() => handleDeleteMeal(meal)}
-                                      aria-label="Eliminar"
-                                    >
-                                      <Trash size={16} />
-                                    </button>
-                                  </div>
-                                </>
-                              )}
-                            </div>
+                            <button
+                              type="button"
+                              className="meal-item meal-item-button"
+                              key={meal.id}
+                              onClick={() => setSelectedMeal(meal)}
+                            >
+                              <span className="meal-item-name">{meal.name}</span>
+                            </button>
                           ))}
                         </div>
                       )}
