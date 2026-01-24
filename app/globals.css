@@ -110,6 +110,37 @@ body {
   justify-content: center;
 }
 
+.meal-day-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.meal-day-pill {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meal-day-pill.is-selected {
+  border-color: #1b5fd0;
+  background: rgba(27, 95, 208, 0.25);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(27, 95, 208, 0.35);
+}
+
+.form-check-input:checked {
+  background-color: #1b5fd0;
+  border-color: #1b5fd0;
+}
+
 /* Bootstrap button theme overrides */
 .btn {
   border-radius: 10px;
@@ -117,15 +148,15 @@ body {
 }
 
 .btn-primary {
-  background-color: #1f6feb;
-  border-color: #1f6feb;
+  background-color: #1b5fd0;
+  border-color: #1b5fd0;
   color: #ffffff;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #2b78f6;
-  border-color: #2b78f6;
+  background-color: #2369dc;
+  border-color: #2369dc;
   color: #ffffff;
 }
 

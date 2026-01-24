@@ -61,17 +61,21 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
 
           <Form.Group className="mb-3">
             <Form.Label className="text-white">Dia</Form.Label>
-            <Form.Select
-              value={dayIndex}
-              onChange={(e) => setDayIndex(e.target.value)}
-              disabled={saving}
-            >
-              {weekdays.map((day, index) => (
-                <option key={day} value={index}>
-                  {day}
-                </option>
+            <div className="meal-day-picker">
+              {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((label, index) => (
+                <button
+                  key={label}
+                  type="button"
+                  className={`meal-day-pill ${Number(dayIndex) === index ? 'is-selected' : ''}`}
+                  onClick={() => setDayIndex(String(index))}
+                  disabled={saving}
+                  aria-pressed={Number(dayIndex) === index}
+                >
+                  {label}
+                </button>
               ))}
-            </Form.Select>
+            </div>
+            <div className="text-light-50 small mt-2">{weekdays[Number(dayIndex)]}</div>
           </Form.Group>
         </Form>
       </Modal.Body>
