@@ -1,11 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
+import AddMealModal from '@/components/AddMealModal';
+import { PencilSquare, Trash } from 'react-bootstrap-icons';
 
 type Meal = {
   id: string;
@@ -16,11 +18,10 @@ type Meal = {
 
 export default function MealsPage() {
   const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-  const [pairId, setPairId] = useState<string | null>(null);
   const [meals, setMeals] = useState<Meal[]>([]);
-  const [newMealByDay, setNewMealByDay] = useState<Record<number, string>>({});
   const [editingMealId, setEditingMealId] = useState<string | null>(null);
   const [editingMealName, setEditingMealName] = useState('');
+  const [showAddMeal, setShowAddMeal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,8 +36,6 @@ export default function MealsPage() {
         setLoading(false);
         return;
       }
-
-      setPairId(resolvedPairId);
 
       const mealsQuery = query(
         collection(db, 'meals'),
@@ -70,19 +69,6 @@ export default function MealsPage() {
     if (typeof anyDate.seconds === 'number') return anyDate.seconds;
     if (anyDate instanceof Date) return Math.floor(anyDate.getTime() / 1000);
     return 0;
-  };
-
-  const handleAddMeal = async (dayIndex: number) => {
-    if (!pairId) return;
-    const name = (newMealByDay[dayIndex] || '').trim();
-    if (!name) return;
-    await addDoc(collection(db, 'meals'), {
-      pairId,
-      day: dayIndex,
-      name,
-      createdAt: new Date(),
-    });
-    setNewMealByDay((prev) => ({ ...prev, [dayIndex]: '' }));
   };
 
   const handleStartEditMeal = (meal: Meal) => {
@@ -122,7 +108,8 @@ export default function MealsPage() {
 
   return (
     <AuthGuard>
-      <TopNav title="Comidas" />
+      <TopNav title="Comidas" onAddClick={() => setShowAddMeal(true)} />
+      <AddMealModal show={showAddMeal} onHide={() => setShowAddMeal(false)} />
       <div className="container mt-4 mb-5 pb-5">
         <div className="card shadow-sm bg-dark border-0 mb-4">
           <div className="card-body">
@@ -166,18 +153,20 @@ export default function MealsPage() {
                               ) : (
                                 <>
                                   <span className="meal-item-name">{meal.name}</span>
-                                  <div className="btn-group btn-group-sm">
+                                  <div className="meal-actions">
                                     <button
-                                      className="btn btn-outline-light"
+                                      className="btn btn-outline-light btn-sm meal-icon-button"
                                       onClick={() => handleStartEditMeal(meal)}
+                                      aria-label="Editar"
                                     >
-                                      Editar
+                                      <PencilSquare size={16} />
                                     </button>
                                     <button
-                                      className="btn btn-outline-danger"
+                                      className="btn btn-outline-danger btn-sm meal-icon-button"
                                       onClick={() => handleDeleteMeal(meal)}
+                                      aria-label="Eliminar"
                                     >
-                                      Eliminar
+                                      <Trash size={16} />
                                     </button>
                                   </div>
                                 </>
@@ -186,20 +175,6 @@ export default function MealsPage() {
                           ))}
                         </div>
                       )}
-
-                      <div className="input-group input-group-sm mt-3">
-                        <input
-                          className="form-control"
-                          placeholder="Agregar comida"
-                          value={newMealByDay[dayIndex] || ''}
-                          onChange={(e) =>
-                            setNewMealByDay((prev) => ({ ...prev, [dayIndex]: e.target.value }))
-                          }
-                        />
-                        <button className="btn btn-primary" onClick={() => handleAddMeal(dayIndex)}>
-                          Anadir
-                        </button>
-                      </div>
                     </div>
                   </div>
                 );
