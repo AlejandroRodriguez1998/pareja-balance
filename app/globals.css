@@ -33,6 +33,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  body {
+    background: radial-gradient(circle at top, rgba(45, 50, 58, 0.7), #1c1d20 55%, #16171a 100%);
+  }
+}
+
 .white-important {
   color: white !important;
 }
@@ -44,7 +50,7 @@ body {
 }
 
 .text-light-50 {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .modal-header .btn-close {
@@ -54,7 +60,7 @@ body {
 .meal-day-card {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  border-radius: 16px;
   color: #ffffff;
 }
 
@@ -80,8 +86,8 @@ body {
   gap: 8px;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 12px;
+  padding: 10px 12px;
   flex-wrap: wrap;
 }
 
@@ -124,6 +130,7 @@ body {
   color: inherit;
   text-align: left;
   cursor: pointer;
+  width: 100%;
 }
 
 .meal-item-button:hover {
@@ -163,8 +170,12 @@ body {
 
 /* Bootstrap button theme overrides */
 .btn {
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
+}
+
+.card {
+  border-radius: 16px;
 }
 
 .btn-primary {
