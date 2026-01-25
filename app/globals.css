@@ -35,7 +35,7 @@ body {
 
 @media (prefers-color-scheme: dark) {
   body {
-    background: radial-gradient(circle at top, rgba(45, 50, 58, 0.7), #1c1d20 55%, #16171a 100%);
+    background: #1c1d20;
   }
 }
 
@@ -135,6 +135,39 @@ body {
 
 .meal-item-button:hover {
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+.list-group-item.bg-dark {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.list-group-item.bg-dark:last-child {
+  margin-bottom: 0;
+}
+
+.navbar.fixed-bottom .nav-link {
+  transform: translateY(-6px);
+}
+
+.navbar.fixed-bottom .nav-link:active {
+  transform: translateY(-6px) scale(0.96);
+  opacity: 0.85;
+}
+
+.meal-item-button:active {
+  transform: scale(0.98);
+}
+
+.badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.text-secondary {
+  color: rgba(255, 255, 255, 0.65) !important;
 }
 
 .meal-day-picker {

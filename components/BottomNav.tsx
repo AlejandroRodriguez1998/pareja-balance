@@ -13,8 +13,8 @@ export default function BottomNav() {
         style={{
           backgroundColor: 'rgb(30, 30, 30)',
           borderTop: '1px solid rgb(51, 51, 51)',
-          paddingBottom: `calc(12px + env(safe-area-inset-bottom))`,
-          paddingTop: '10px',
+          paddingBottom: `calc(14px + env(safe-area-inset-bottom))`,
+          paddingTop: '12px',
           position: 'fixed',
           left: 0,
           right: 0,
