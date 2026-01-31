@@ -374,6 +374,153 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.landing-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  margin: 3rem 0 2rem;
+}
+
+.landing-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.5rem;
+  min-height: 180px;
+}
+
+.landing-panel h3 {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.landing-panel p {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.landing-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.landing-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landing-step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(27, 95, 208, 0.2);
+  color: #9ab4ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.landing-step h4 {
+  margin: 0 0 0.35rem;
+  color: #ffffff;
+}
+
+.landing-step p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.landing-testimonials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.landing-testimonial {
+  padding: 1.4rem;
+  border-radius: 18px;
+  background: rgba(20, 22, 25, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.landing-testimonial p {
+  margin: 0 0 1rem;
+}
+
+.landing-testimonial-user {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.landing-testimonial-user strong {
+  color: #ffffff;
+  display: block;
+}
+
+.landing-testimonial-user span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+}
+
+.landing-faq {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.landing-faq-item {
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landing-faq-item h4 {
+  margin: 0 0 0.5rem;
+  color: #ffffff;
+}
+
+.landing-faq-item p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.landing-cta-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.75rem 2rem;
+  border-radius: 20px;
+  background: linear-gradient(90deg, rgba(27, 95, 208, 0.2), rgba(32, 182, 122, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 2rem;
+}
+
+.landing-cta-banner h3 {
+  color: #ffffff;
+  margin: 0 0 0.35rem;
+}
+
+.landing-cta-banner p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 @media (max-width: 767px) {
   .landing-hero {
     padding: 3.5rem 0 4.5rem;

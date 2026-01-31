@@ -139,6 +139,119 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        <div className="landing-divider" />
+
+        <div className="row g-4 mt-4">
+          <div className="col-12 col-lg-4">
+            <div className="landing-panel">
+              <h3>Todo claro en una vista</h3>
+              <p>
+                Dashboard con balance actualizado, historial completo y gastos recientes con
+                detalle por persona.
+              </p>
+            </div>
+          </div>
+          <div className="col-12 col-lg-4">
+            <div className="landing-panel">
+              <h3>Plan semanal de comidas</h3>
+              <p>
+                Organiza la semana en minutos y evita improvisar. Cambia el dia de cada comida
+                con un toque.
+              </p>
+            </div>
+          </div>
+          <div className="col-12 col-lg-4">
+            <div className="landing-panel">
+              <h3>Sincronizado en tiempo real</h3>
+              <p>
+                Todo se actualiza al instante para ambos. Sin mensajes, sin dudas, sin lios.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="landing-steps">
+          <div className="landing-step">
+            <div className="landing-step-number">1</div>
+            <div>
+              <h4>Crea tu par</h4>
+              <p>Entra con tu cuenta y conecta con tu pareja.</p>
+            </div>
+          </div>
+          <div className="landing-step">
+            <div className="landing-step-number">2</div>
+            <div>
+              <h4>Registra gastos</h4>
+              <p>Divide pagos en segundos y guarda cada gasto con detalle.</p>
+            </div>
+          </div>
+          <div className="landing-step">
+            <div className="landing-step-number">3</div>
+            <div>
+              <h4>Consulta el balance</h4>
+              <p>Saldo siempre visible para evitar discusiones.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="landing-testimonials">
+          <div className="landing-testimonial">
+            <p>“Por fin un balance claro, sin excels ni mensajes cada semana.”</p>
+            <div className="landing-testimonial-user">
+              <span className="landing-avatar">L</span>
+              <div>
+                <strong>Laura</strong>
+                <span>Madrid</span>
+              </div>
+            </div>
+          </div>
+          <div className="landing-testimonial">
+            <p>“La parte de comidas nos ha salvado entre semana.”</p>
+            <div className="landing-testimonial-user">
+              <span className="landing-avatar">J</span>
+              <div>
+                <strong>Javi</strong>
+                <span>Valencia</span>
+              </div>
+            </div>
+          </div>
+          <div className="landing-testimonial">
+            <p>“Rápido, limpio y se entiende a la primera.”</p>
+            <div className="landing-testimonial-user">
+              <span className="landing-avatar">M</span>
+              <div>
+                <strong>Mar</strong>
+                <span>Sevilla</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="landing-faq">
+          <div className="landing-faq-item">
+            <h4>¿Es gratis?</h4>
+            <p>Si, puedes usar todas las funciones sin coste.</p>
+          </div>
+          <div className="landing-faq-item">
+            <h4>¿Puedo editar gastos?</h4>
+            <p>Claro, puedes editar o eliminar cualquier gasto cuando quieras.</p>
+          </div>
+          <div className="landing-faq-item">
+            <h4>¿Se actualiza en tiempo real?</h4>
+            <p>Si, lo que añadas se refleja al instante en ambos.</p>
+          </div>
+        </div>
+
+        <div className="landing-cta-banner">
+          <div>
+            <h3>Empieza hoy y olvida discusiones de dinero</h3>
+            <p>Tu balance en pareja, claro y compartido.</p>
+          </div>
+          <Link href="/login" className="btn btn-primary btn-lg">
+            Crear cuenta
+          </Link>
+        </div>
       </div>
     </div>
   );
