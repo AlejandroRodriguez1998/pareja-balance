@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1e1e1e" />
+        <meta name="theme-color" content="#101318" />
 
         {/* 📱 iOS Safari status bar */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="Balance" />
 
         {/* ✅ Forzar color oscuro igual que bg-dark */}
-        <meta name="background-color" content="#1e1e1e" />
+        <meta name="background-color" content="#101318" />
         <meta name="color-scheme" content="dark" />
 
         {/* 🔧 Compatibilidad general */}
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       </head>
-      <body style={{ backgroundColor: '#1e1e1e', color: 'white' }}>{children}</body>
+      <body style={{ backgroundColor: '#101318', color: 'white' }}>{children}</body>
     </html>
   );
 }

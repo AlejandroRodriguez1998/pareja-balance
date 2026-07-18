@@ -1,12 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
 import EditExpenseModal from '@/components/EditExpenseModal';
+import { CalendarWeek, Receipt } from 'react-bootstrap-icons';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -36,148 +38,177 @@ export default function HistoryPage() {
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
+    let unsubscribeExpenses: (() => void) | null = null;
+    let cancelled = false;
 
-    getUserPairId(user.uid).then((pairId) => {
-      if (!pairId) {
-        alert('No se encontró una pareja asociada a este usuario.');
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (unsubscribeExpenses) {
+        unsubscribeExpenses();
+        unsubscribeExpenses = null;
+      }
+
+      if (!user) {
         setLoading(false);
         return;
       }
 
-      const q = query(
-        collection(db, 'expenses'),
-        where('pairId', '==', pairId),
-        orderBy('date', 'desc')
-      );
+      setLoading(true);
 
-      const unsub = onSnapshot(q, (snap) => {
-        const data: Expense[] = [];
-        snap.forEach((d) => {
-          const e = d.data() as any;
-          data.push({
-            id: d.id,
-            description: e.description,
-            total: e.total,
-            pagadoAlec: e.pagadoAlec,
-            pagadoMario: e.pagadoMario,
-            date: e.date,
-          });
-        });
+      getUserPairId(user.uid)
+        .then((pairId) => {
+          if (cancelled) return;
 
-        const grouped: Record<string, WeekGroup> = {};
-        const isAlec = user.email?.toLowerCase().includes('alex');
-
-        data.forEach((e) => {
-          const fecha = e.date?.seconds ? dayjs.unix(e.date.seconds) : dayjs();
-          const start = fecha.startOf('isoWeek').format('YYYY-MM-DD');
-          const end = fecha.endOf('isoWeek').format('YYYY-MM-DD');
-          const key = start;
-
-          if (!grouped[key]) {
-            grouped[key] = { weekStart: start, weekEnd: end, expenses: [], balance: 0 };
+          if (!pairId) {
+            alert('No se encontro una pareja asociada a este usuario.');
+            setLoading(false);
+            return;
           }
 
-          grouped[key].expenses.push(e);
+          const q = query(
+            collection(db, 'expenses'),
+            where('pairId', '==', pairId),
+            orderBy('date', 'desc')
+          );
 
-          // 🧮 Calculamos el balance según quién es el usuario
-          const diff = isAlec
-            ? e.pagadoAlec - e.pagadoMario
-            : e.pagadoMario - e.pagadoAlec;
+          unsubscribeExpenses = onSnapshot(q, (snap) => {
+            const data: Expense[] = [];
+            snap.forEach((d) => {
+              const e = d.data() as any;
+              data.push({
+                id: d.id,
+                description: e.description,
+                total: Number(e.total || 0),
+                pagadoAlec: Number(e.pagadoAlec || 0),
+                pagadoMario: Number(e.pagadoMario || 0),
+                date: e.date,
+              });
+            });
 
-          grouped[key].balance += diff;
+            const grouped: Record<string, WeekGroup> = {};
+            const isAlec = user.email?.toLowerCase().includes('alex');
+
+            data.forEach((e) => {
+              const date = e.date?.seconds ? dayjs.unix(e.date.seconds) : dayjs();
+              const start = date.startOf('isoWeek').format('YYYY-MM-DD');
+              const end = date.endOf('isoWeek').format('YYYY-MM-DD');
+
+              if (!grouped[start]) {
+                grouped[start] = { weekStart: start, weekEnd: end, expenses: [], balance: 0 };
+              }
+
+              grouped[start].expenses.push(e);
+              grouped[start].balance += isAlec
+                ? e.pagadoAlec - e.pagadoMario
+                : e.pagadoMario - e.pagadoAlec;
+            });
+
+            const result = Object.values(grouped).sort(
+              (a, b) => dayjs(b.weekStart).unix() - dayjs(a.weekStart).unix()
+            );
+
+            setWeeks(result);
+            setLoading(false);
+          }, (error) => {
+            console.error('Error loading history:', error);
+            setLoading(false);
+          });
+        })
+        .catch((error) => {
+          console.error('Error loading pair:', error);
+          setLoading(false);
         });
-
-        const result = Object.values(grouped).sort(
-          (a, b) => dayjs(b.weekStart).unix() - dayjs(a.weekStart).unix()
-        );
-
-        setWeeks(result);
-        setLoading(false);
-      });
-
-      return () => unsub();
     });
+
+    return () => {
+      cancelled = true;
+      unsubscribeAuth();
+      if (unsubscribeExpenses) unsubscribeExpenses();
+    };
   }, []);
 
   if (loading) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-light bg-dark">
-        <div className="spinner-border text-light" role="status"></div>
+      <div className="app-loading-screen">
+        <div className="spinner-border app-loading-spinner" role="status"></div>
       </div>
     );
   }
 
   return (
-    <>
-      <AuthGuard>
-        <TopNav title="Historial" />
-        <div className="container mt-3 mb-5 pb-5">
+    <AuthGuard>
+      <TopNav title="Historial" />
+      <main className="dashboard-shell">
+        <div className="container dashboard-container">
           {weeks.length === 0 ? (
-            <p className="text-center mt-5">Aún no hay gastos registrados.</p>
+            <div className="empty-state">
+              <p>Aun no hay gastos registrados.</p>
+            </div>
           ) : (
-            weeks.map((week) => (
-              <div key={week.weekStart} className="mb-4">
-                <h5 className="fw-bold text-white mb-3">
-                  Semana del {dayjs(week.weekStart).format('DD/MM')} al{' '}
-                  {dayjs(week.weekEnd).format('DD/MM/YYYY')}
-                </h5>
+            <div className="history-week-list">
+              {weeks.map((week) => (
+                <section key={week.weekStart} className="recent-expenses-panel">
+                  <div className="section-heading">
+                    <div>
+                      <span className="section-kicker">Semana</span>
+                      <h2>
+                        {dayjs(week.weekStart).format('DD/MM')} -{' '}
+                        {dayjs(week.weekEnd).format('DD/MM/YYYY')}
+                      </h2>
+                    </div>
+                    <CalendarWeek size={22} />
+                  </div>
 
-                <ul className="list-group mb-2">
-                  {week.expenses.map((e) => (
-                    <li
-                      key={e.id}
-                      className="list-group-item bg-dark text-light d-flex justify-content-between align-items-center border-secondary"
-                      onClick={() => setSelectedExpense(e)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div>
-                        <div className="fw-semibold text-capitalize">{e.description}</div>
-                        <small className="text-secondary white-important">
-                          Total: {(e.total ?? 0).toFixed(2)} € <br />
-                          Alejandro: {(e.pagadoAlec ?? 0).toFixed(2)} € <br />
-                          Mario: {(e.pagadoMario ?? 0).toFixed(2)} €
-                        </small>
-                      </div>
-                      <span
-                        className={`badge px-3 ${
-                          e.pagadoAlec - e.pagadoMario >= 0
-                            ? 'bg-success-subtle text-success'
-                            : 'bg-danger-subtle text-danger'
-                        }`}
-                      >
-                        {e.pagadoAlec - e.pagadoMario > 0 ? '+' : ''}
-                        {(e.pagadoAlec - e.pagadoMario).toFixed(2)} €
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                  <div className="expense-list">
+                    {week.expenses.map((e) => {
+                      const diff = e.pagadoAlec - e.pagadoMario;
 
-                {selectedExpense && (
-                  <EditExpenseModal
-                    show={!!selectedExpense}
-                    expense={selectedExpense}
-                    onHide={() => setSelectedExpense(null)}
-                  />
-                )}
+                      return (
+                        <button
+                          key={e.id}
+                          type="button"
+                          className="expense-row"
+                          onClick={() => setSelectedExpense(e)}
+                        >
+                          <span className="expense-icon">
+                            <Receipt size={18} />
+                          </span>
+                          <span className="expense-main">
+                            <strong>{e.description}</strong>
+                            <small>
+                              Total {e.total.toFixed(2)} EUR | A {e.pagadoAlec.toFixed(2)} | M{' '}
+                              {e.pagadoMario.toFixed(2)}
+                            </small>
+                          </span>
+                          <span
+                            className={`expense-delta ${diff >= 0 ? 'is-positive' : 'is-negative'}`}
+                          >
+                            {diff > 0 ? '+' : ''}
+                            {diff.toFixed(2)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                <div
-                  className={`text-end fw-bold ${
-                    week.balance >= 0 ? 'text-success' : 'text-danger'
-                  }`}
-                >
-                  {week.balance >= 0 ? 'Saldo a favor: ' : 'Saldo en contra: '}
-                  {week.balance.toFixed(2)} €
-                </div>
+                  <div className={`week-balance ${week.balance >= 0 ? 'is-positive' : 'is-negative'}`}>
+                    <span>{week.balance >= 0 ? 'Saldo a favor' : 'Saldo en contra'}</span>
+                    <strong>{Math.abs(week.balance).toFixed(2)} EUR</strong>
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
 
-                <hr />
-              </div>
-            ))
+          {selectedExpense && (
+            <EditExpenseModal
+              show={!!selectedExpense}
+              expense={selectedExpense}
+              onHide={() => setSelectedExpense(null)}
+            />
           )}
         </div>
-        <BottomNav />
-      </AuthGuard>
-    </>
+      </main>
+      <BottomNav />
+    </AuthGuard>
   );
 }

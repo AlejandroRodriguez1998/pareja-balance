@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
@@ -11,18 +11,27 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
   const [name, setName] = useState('');
   const [dayIndex, setDayIndex] = useState('0');
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
+
+  const closeIfIdle = () => {
+    if (!savingRef.current) onHide();
+  };
 
   const handleSave = async () => {
+    if (savingRef.current) return;
+
     const user = auth.currentUser;
     if (!user) return alert('Debes iniciar sesion.');
     const trimmed = name.trim();
     if (!trimmed) return alert('Anade un nombre para la comida.');
 
+    savingRef.current = true;
+    setSaving(true);
+
     try {
       const pairId = await getUserPairId(user.uid);
       if (!pairId) return alert('No se encontro una pareja asociada.');
 
-      setSaving(true);
       await addDoc(collection(db, 'meals'), {
         pairId,
         user_id: user.uid,
@@ -36,12 +45,13 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
       console.error(err);
       alert(`Error al guardar: ${err.message}`);
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title className="text-white">Anadir comida</Modal.Title>
       </Modal.Header>
@@ -81,7 +91,7 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide} disabled={saving}>
+        <Button variant="secondary" onClick={closeIfIdle} disabled={saving}>
           Cancelar
         </Button>
         <Button variant="primary" onClick={handleSave} disabled={saving}>

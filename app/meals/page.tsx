@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
@@ -8,6 +9,7 @@ import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
 import AddMealModal from '@/components/AddMealModal';
 import EditMealModal from '@/components/EditMealModal';
+import { EggFried } from 'react-bootstrap-icons';
 
 type Meal = {
   id: string;
@@ -24,40 +26,61 @@ export default function MealsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) return;
-
     let unsubscribeMeals: (() => void) | null = null;
+    let cancelled = false;
 
-    getUserPairId(user.uid).then((resolvedPairId) => {
-      if (!resolvedPairId) {
-        alert('No se encontro una pareja asociada a este usuario.');
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (unsubscribeMeals) {
+        unsubscribeMeals();
+        unsubscribeMeals = null;
+      }
+
+      if (!user) {
         setLoading(false);
         return;
       }
 
-      const mealsQuery = query(
-        collection(db, 'meals'),
-        where('pairId', '==', resolvedPairId)
-      );
+      setLoading(true);
 
-      unsubscribeMeals = onSnapshot(mealsQuery, (snap) => {
-        const items: Meal[] = [];
-        snap.forEach((d) => {
-          const data = d.data() as any;
-          items.push({
-            id: d.id,
-            day: Number(data.day ?? 0),
-            name: data.name || '',
-            createdAt: data.createdAt,
+      getUserPairId(user.uid)
+        .then((resolvedPairId) => {
+          if (cancelled) return;
+
+          if (!resolvedPairId) {
+            alert('No se encontro una pareja asociada a este usuario.');
+            setLoading(false);
+            return;
+          }
+
+          const mealsQuery = query(collection(db, 'meals'), where('pairId', '==', resolvedPairId));
+
+          unsubscribeMeals = onSnapshot(mealsQuery, (snap) => {
+            const items: Meal[] = [];
+            snap.forEach((d) => {
+              const data = d.data() as any;
+              items.push({
+                id: d.id,
+                day: Number(data.day ?? 0),
+                name: data.name || '',
+                createdAt: data.createdAt,
+              });
+            });
+            setMeals(items);
+            setLoading(false);
+          }, (error) => {
+            console.error('Error loading meals:', error);
+            setLoading(false);
           });
+        })
+        .catch((error) => {
+          console.error('Error loading pair:', error);
+          setLoading(false);
         });
-        setMeals(items);
-        setLoading(false);
-      });
     });
 
     return () => {
+      cancelled = true;
+      unsubscribeAuth();
       if (unsubscribeMeals) unsubscribeMeals();
     };
   }, []);
@@ -70,10 +93,19 @@ export default function MealsPage() {
     return 0;
   };
 
+  const todayIndex = (new Date().getDay() + 6) % 7;
+  const tomorrowIndex = (todayIndex + 1) % 7;
+  const todayMeals = meals
+    .filter((meal) => meal.day === todayIndex)
+    .sort((a, b) => getMealTime(a) - getMealTime(b));
+  const tomorrowMeals = meals
+    .filter((meal) => meal.day === tomorrowIndex)
+    .sort((a, b) => getMealTime(a) - getMealTime(b));
+
   if (loading) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100 text-light bg-dark">
-        <div className="spinner-border text-light" role="status"></div>
+      <div className="app-loading-screen">
+        <div className="spinner-border app-loading-spinner" role="status"></div>
       </div>
     );
   }
@@ -87,48 +119,108 @@ export default function MealsPage() {
         meal={selectedMeal}
         onHide={() => setSelectedMeal(null)}
       />
-      <div className="container mt-4 mb-5 pb-5">
-        <div className="card shadow-sm bg-dark border-0 mb-4">
-          <div className="card-body">
-            <h5 className="fw-bold text-center text-white mb-3">Plan semanal de comidas</h5>
-            <div className="row g-3">
+
+      <main className="dashboard-shell">
+        <div className="container dashboard-container">
+          <section className="today-meal-panel">
+            <div>
+              <span className="section-kicker">Hoy</span>
+              <h1>{weekdays[todayIndex]}</h1>
+            </div>
+
+            {todayMeals.length === 0 ? (
+              <p className="today-meal-empty">No hay comida planeada.</p>
+            ) : (
+              <div className="today-meal-list">
+                {todayMeals.map((meal) => (
+                  <button
+                    type="button"
+                    className="today-meal-item"
+                    key={meal.id}
+                    onClick={() => setSelectedMeal(meal)}
+                  >
+                    {meal.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="tomorrow-meal-panel">
+            <div>
+              <span className="section-kicker">Manana</span>
+              <h2>{weekdays[tomorrowIndex]}</h2>
+            </div>
+
+            {tomorrowMeals.length === 0 ? (
+              <p className="today-meal-empty">No hay comida planeada.</p>
+            ) : (
+              <div className="today-meal-list">
+                {tomorrowMeals.map((meal) => (
+                  <button
+                    type="button"
+                    className="today-meal-item"
+                    key={meal.id}
+                    onClick={() => setSelectedMeal(meal)}
+                  >
+                    {meal.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="meals-overview">
+            <div className="section-heading">
+              <div>
+                <span className="section-kicker">Semana</span>
+                <h2>Plan de comidas</h2>
+              </div>
+              <EggFried size={22} />
+            </div>
+
+            <div className="meal-week-list">
               {weekdays.map((dayLabel, dayIndex) => {
                 const dayMeals = meals
                   .filter((meal) => meal.day === dayIndex)
                   .sort((a, b) => getMealTime(a) - getMealTime(b));
 
                 return (
-                  <div className="col-12 col-md-6" key={dayLabel}>
-                    <div className="meal-day-card p-3 h-100">
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span className="meal-day-title">{dayLabel}</span>
-                        <span className="meal-count">{dayMeals.length}</span>
-                      </div>
+                  <section className="meal-day-panel" key={dayLabel}>
+                    <div className="meal-day-marker">
+                      <span>{dayLabel.slice(0, 3)}</span>
+                    </div>
 
+                    <div className="meal-day-content">
+                      {dayMeals.length > 1 && (
+                        <div className="meal-day-count-row">
+                          <span className="meal-count">{dayMeals.length}</span>
+                        </div>
+                      )}
                       {dayMeals.length === 0 ? (
-                        <p className="text-light-50 small mb-2">Sin comidas planeadas.</p>
+                        <p className="meal-empty">Sin comidas planeadas.</p>
                       ) : (
-                        <div className="d-flex flex-column gap-2">
+                        <div className="meal-list">
                           {dayMeals.map((meal) => (
                             <button
                               type="button"
-                              className="meal-item meal-item-button"
+                              className="meal-row"
                               key={meal.id}
                               onClick={() => setSelectedMeal(meal)}
                             >
-                              <span className="meal-item-name">{meal.name}</span>
+                              <span>{meal.name}</span>
                             </button>
                           ))}
                         </div>
                       )}
                     </div>
-                  </div>
+                  </section>
                 );
               })}
             </div>
-          </div>
+          </section>
         </div>
-      </div>
+      </main>
       <BottomNav />
     </AuthGuard>
   );

@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
 import { GearFill, Plus } from 'react-bootstrap-icons';
 import AddExpenseModal from './AddExpenseModal';
 import SettingsModal from './SettingsModal';
@@ -17,16 +16,17 @@ export default function TopNav({ title, onAddClick }: Props) {
 
   return (
     <>
-      <nav className="navbar border-bottom px-3" style={{ backgroundColor: 'rgb(30, 30, 30)', color: 'white' }}>
-        <button className="btn btn-link text-white p-0" onClick={() => setShowSettings(true)}>
+      <nav className="app-top-nav">
+        <button className="nav-icon-button" onClick={() => setShowSettings(true)} aria-label="Ajustes">
           <GearFill size={20} />
         </button>
-        <h5 className="m-0">{title}</h5>
+        <h5>{title}</h5>
         <button
-          className="btn btn-link text-success text-white p-0"
+          className="nav-icon-button nav-icon-button-primary"
           onClick={onAddClick || (() => setShowAddExpense(true))}
+          aria-label="Anadir"
         >
-          <Plus size={30} />
+          <Plus size={24} />
         </button>
       </nav>
 

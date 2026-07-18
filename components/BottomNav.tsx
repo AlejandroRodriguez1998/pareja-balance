@@ -7,52 +7,30 @@ export default function BottomNav() {
   const path = usePathname();
 
   return (
-    <div className="pb-5">
-      <nav
-        className="navbar fixed-bottom justify-content-around"
-        style={{
-          backgroundColor: 'rgb(30, 30, 30)',
-          borderTop: '1px solid rgb(51, 51, 51)',
-          paddingBottom: `calc(14px + env(safe-area-inset-bottom))`,
-          paddingTop: '12px',
-          position: 'fixed',
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 1000,
-        }}
-      >
-        {/* Inicio */}
+    <div className="bottom-nav-spacer">
+      <nav className="app-bottom-nav">
         <Link
           href="/dashboard"
-          className={`nav-link d-flex flex-column align-items-center ${
-            path === '/dashboard' ? 'text-primary' : 'text-light'
-          }`}
+          className={`bottom-nav-link ${path === '/dashboard' ? 'is-active' : ''}`}
         >
           <HouseDoorFill size={22} />
-          <div style={{ fontSize: '0.75rem' }}>Inicio</div>
+          <span>Inicio</span>
         </Link>
 
-        {/* Historial */}
         <Link
           href="/history"
-          className={`nav-link d-flex flex-column align-items-center ${
-            path === '/history' ? 'text-primary' : 'text-light'
-          }`}
+          className={`bottom-nav-link ${path === '/history' ? 'is-active' : ''}`}
         >
           <ClockFill size={22} />
-          <div style={{ fontSize: '0.75rem' }}>Historial</div>
+          <span>Historial</span>
         </Link>
 
-        {/* Comidas */}
         <Link
           href="/meals"
-          className={`nav-link d-flex flex-column align-items-center ${
-            path === '/meals' ? 'text-primary' : 'text-light'
-          }`}
+          className={`bottom-nav-link ${path === '/meals' ? 'is-active' : ''}`}
         >
           <EggFried size={22} />
-          <div style={{ fontSize: '0.75rem' }}>Comidas</div>
+          <span>Comidas</span>
         </Link>
       </nav>
     </div>

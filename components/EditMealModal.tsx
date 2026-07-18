@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { db } from '@/lib/firebase';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
@@ -24,6 +24,7 @@ export default function EditMealModal({
   const [name, setName] = useState('');
   const [dayIndex, setDayIndex] = useState('0');
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
 
   useEffect(() => {
     if (meal) {
@@ -32,12 +33,20 @@ export default function EditMealModal({
     }
   }, [meal]);
 
+  const closeIfIdle = () => {
+    if (!savingRef.current) onHide();
+  };
+
   const handleSave = async () => {
+    if (savingRef.current) return;
     if (!meal) return;
     const trimmed = name.trim();
     if (!trimmed) return alert('Anade un nombre para la comida.');
+
+    savingRef.current = true;
+    setSaving(true);
+
     try {
-      setSaving(true);
       await updateDoc(doc(db, 'meals', meal.id), {
         name: trimmed,
         day: Number(dayIndex),
@@ -48,28 +57,34 @@ export default function EditMealModal({
       console.error(err);
       alert('Error al guardar cambios: ' + err.message);
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   };
 
   const handleDelete = async () => {
+    if (savingRef.current) return;
     if (!meal) return;
     const confirmed = confirm('Seguro que deseas eliminar esta comida?');
     if (!confirmed) return;
+
+    savingRef.current = true;
+    setSaving(true);
+
     try {
-      setSaving(true);
       await deleteDoc(doc(db, 'meals', meal.id));
       onHide();
     } catch (err: any) {
       console.error(err);
       alert('Error al eliminar: ' + err.message);
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title className="text-white">Editar comida</Modal.Title>
       </Modal.Header>
@@ -112,7 +127,7 @@ export default function EditMealModal({
           Eliminar
         </Button>
         <div>
-          <Button variant="secondary" onClick={onHide} disabled={saving} className="me-2">
+          <Button variant="secondary" onClick={closeIfIdle} disabled={saving} className="me-2">
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleSave} disabled={saving}>

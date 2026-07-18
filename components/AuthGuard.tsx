@@ -23,8 +23,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-dark text-white">
-        <div className="spinner-border text-light mt-3" role="status"></div>
+      <div className="app-loading-screen">
+        <div className="spinner-border app-loading-spinner" role="status"></div>
       </div>
     );
   }

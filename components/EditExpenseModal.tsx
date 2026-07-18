@@ -1,74 +1,91 @@
-'use client'
-import { useState, useEffect } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
-import { db } from '@/lib/firebase'
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 type Props = {
-  show: boolean
-  onHide: () => void
-  expense: any | null
-}
+  show: boolean;
+  onHide: () => void;
+  expense: any | null;
+};
 
 export default function EditExpenseModal({ show, onHide, expense }: Props) {
-  const [descripcion, setDescripcion] = useState('')
-  const [total, setTotal] = useState('')
-  const [pagadoAlec, setPagadoAlec] = useState('')
-  const [pagadoMario, setPagadoMario] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [descripcion, setDescripcion] = useState('');
+  const [total, setTotal] = useState('');
+  const [pagadoAlec, setPagadoAlec] = useState('');
+  const [pagadoMario, setPagadoMario] = useState('');
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
 
-  // 🔹 Cargar los valores del gasto cuando se abre el modal
   useEffect(() => {
     if (expense) {
-      setDescripcion(expense.description || '')
-      setTotal(expense.total?.toString() || '')
-      setPagadoAlec(expense.pagadoAlec?.toString() || '')
-      setPagadoMario(expense.pagadoMario?.toString() || '')
+      setDescripcion(expense.description || '');
+      setTotal(expense.total?.toString() || '');
+      setPagadoAlec(expense.pagadoAlec?.toString() || '');
+      setPagadoMario(expense.pagadoMario?.toString() || '');
     }
-  }, [expense])
+  }, [expense]);
+
+  const closeIfIdle = () => {
+    if (!savingRef.current) onHide();
+  };
 
   const handleGuardar = async () => {
-    if (!expense) return
-    const totalNum = Number(total)
-    const alecNum = Number(pagadoAlec)
-    const marioNum = Number(pagadoMario)
-    if (!descripcion.trim()) return alert('Añade una descripción.')
-    if (isNaN(totalNum) || totalNum <= 0) return alert('Total inválido.')
-    
+    if (savingRef.current || !expense) return;
+
+    const totalNum = Number(total);
+    const alecNum = Number(pagadoAlec);
+    const marioNum = Number(pagadoMario);
+
+    if (!descripcion.trim()) return alert('Anade una descripcion.');
+    if (isNaN(totalNum) || totalNum <= 0) return alert('Total invalido.');
+    if (isNaN(alecNum) || isNaN(marioNum)) return alert('Introduce valores numericos.');
+
+    savingRef.current = true;
+    setSaving(true);
+
     try {
-      setSaving(true)
-      const ref = doc(db, 'expenses', expense.id)
+      const ref = doc(db, 'expenses', expense.id);
       await updateDoc(ref, {
         description: descripcion.trim(),
         total: totalNum,
         pagadoAlec: alecNum,
         pagadoMario: marioNum,
-        updatedAt: new Date()
-      })
-      onHide()
+        updatedAt: new Date(),
+      });
+      onHide();
     } catch (err: any) {
-      console.error(err)
-      alert('Error al guardar cambios: ' + err.message)
+      console.error(err);
+      alert('Error al guardar cambios: ' + err.message);
     } finally {
-      setSaving(false)
+      savingRef.current = false;
+      setSaving(false);
     }
-  }
+  };
 
   const handleEliminar = async () => {
-    if (!expense) return
-    const confirmar = confirm('¿Seguro que deseas eliminar este gasto?')
-    if (!confirmar) return
+    if (savingRef.current || !expense) return;
+    const confirmar = confirm('Seguro que deseas eliminar este gasto?');
+    if (!confirmar) return;
+
+    savingRef.current = true;
+    setSaving(true);
+
     try {
-      await deleteDoc(doc(db, 'expenses', expense.id))
-      onHide()
+      await deleteDoc(doc(db, 'expenses', expense.id));
+      onHide();
     } catch (err: any) {
-      console.error(err)
-      alert('Error al eliminar: ' + err.message)
+      console.error(err);
+      alert('Error al eliminar: ' + err.message);
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
-  }
+  };
 
   return (
-    <Modal show={show} onHide={onHide} centered contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title className="text-white">Editar gasto</Modal.Title>
       </Modal.Header>
@@ -76,7 +93,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Descripción</Form.Label>
+            <Form.Label className="text-white">Descripcion</Form.Label>
             <Form.Control
               type="text"
               value={descripcion}
@@ -86,7 +103,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Total (€)</Form.Label>
+            <Form.Label className="text-white">Total (EUR)</Form.Label>
             <Form.Control
               type="number"
               step="0.01"
@@ -130,14 +147,14 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
           Eliminar
         </Button>
         <div>
-          <Button variant="secondary" onClick={onHide} disabled={saving} className="me-2">
+          <Button variant="secondary" onClick={closeIfIdle} disabled={saving} className="me-2">
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleGuardar} disabled={saving}>
-            {saving ? 'Guardando…' : 'Guardar'}
+            {saving ? 'Guardando...' : 'Guardar'}
           </Button>
         </div>
       </Modal.Footer>
     </Modal>
-  )
+  );
 }
