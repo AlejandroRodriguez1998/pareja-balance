@@ -8,9 +8,8 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 export default function AddExpenseModal({ show, onHide }: { show: boolean; onHide: () => void }) {
   const [descripcion, setDescripcion] = useState('');
   const [total, setTotal] = useState('');
-  const [pagadoAlec, setPagadoAlec] = useState('');
-  const [pagadoPareja, setPagadoPareja] = useState('');
   const [dividir, setDividir] = useState(false);
+  const [registrarComoPareja, setRegistrarComoPareja] = useState(false);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
 
@@ -26,16 +25,14 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
     if (!descripcion.trim()) return alert('Anade una descripcion.');
 
     const totalNum = Number(total);
-    let alecNum = Number(pagadoAlec);
-    let parejaNum = Number(pagadoPareja);
 
     if (isNaN(totalNum) || totalNum <= 0) return alert('Cantidad total invalida.');
-    if (isNaN(alecNum) || isNaN(parejaNum)) return alert('Introduce valores numericos.');
 
-    if (dividir) {
-      alecNum = Number((alecNum / 2).toFixed(2));
-      parejaNum = Number((parejaNum / 2).toFixed(2));
-    }
+    const usuarioEsAlec = user.email?.toLowerCase().includes('alex') ?? false;
+    const pagadorEsAlec = registrarComoPareja ? !usuarioEsAlec : usuarioEsAlec;
+    const importeParaSaldo = dividir ? Number((totalNum / 2).toFixed(2)) : totalNum;
+    const alecNum = pagadorEsAlec ? importeParaSaldo : 0;
+    const parejaNum = pagadorEsAlec ? 0 : importeParaSaldo;
 
     savingRef.current = true;
     setSaving(true);
@@ -56,9 +53,8 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
 
       setDescripcion('');
       setTotal('');
-      setPagadoAlec('');
-      setPagadoPareja('');
       setDividir(false);
+      setRegistrarComoPareja(false);
       onHide();
     } catch (err: any) {
       console.error(err);
@@ -99,32 +95,9 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             />
           </Form.Group>
 
-          <div className="row">
-            <div className="col-6">
-              <Form.Group className="mb-3">
-                <Form.Label className="text-white">Alejandro:</Form.Label>
-                <Form.Control
-                  type="number"
-                  step="0.01"
-                  value={pagadoAlec}
-                  onChange={(e) => setPagadoAlec(e.target.value)}
-                  disabled={saving}
-                />
-              </Form.Group>
-            </div>
-            <div className="col-6">
-              <Form.Group className="mb-3">
-                <Form.Label className="text-white">Mario:</Form.Label>
-                <Form.Control
-                  type="number"
-                  step="0.01"
-                  value={pagadoPareja}
-                  onChange={(e) => setPagadoPareja(e.target.value)}
-                  disabled={saving}
-                />
-              </Form.Group>
-            </div>
-          </div>
+          <p className="text-white-50 small mb-3">
+            El gasto se anotará a nombre de quien tiene la sesión iniciada.
+          </p>
 
           <Form.Group className="mb-3">
             <Form.Check
@@ -137,6 +110,19 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
               disabled={saving}
             />
           </Form.Group>
+
+          <details className="mb-3 text-white">
+            <summary>Registrar para la otra persona</summary>
+            <Form.Check
+              type="switch"
+              id="registrar-como-pareja"
+              label="Este gasto lo ha pagado la otra persona"
+              checked={registrarComoPareja}
+              onChange={(e) => setRegistrarComoPareja(e.target.checked)}
+              className="mt-3"
+              disabled={saving}
+            />
+          </details>
         </Form>
       </Modal.Body>
 
