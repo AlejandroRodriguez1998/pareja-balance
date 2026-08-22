@@ -115,7 +115,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             <Form.Check
               type="switch"
               id="registrar-como-pareja"
-              label="Este gasto lo ha pagado la otra persona"
+              label="Pagado por mi pareja"
               checked={registrarComoPareja}
               onChange={(e) => {
                 setRegistrarComoPareja(e.target.checked);
@@ -127,7 +127,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             <Form.Check
               type="switch"
               id="pagado-por-ambos"
-              label="Ambos han pagado lo mismo (saldo 0 EUR)"
+              label="Pagado a medias"
               checked={pagadoPorAmbos}
               onChange={(e) => {
                 setPagadoPorAmbos(e.target.checked);
