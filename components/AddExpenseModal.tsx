@@ -98,10 +98,6 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             />
           </Form.Group>
 
-          <p className="text-white-50 small mb-3">
-            El gasto se anotará a nombre de quien tiene la sesión iniciada.
-          </p>
-
           <Form.Group className="mb-3">
             <Form.Check
               type="switch"
@@ -114,8 +110,8 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
             />
           </Form.Group>
 
-          <details className="mb-3 text-white">
-            <summary>Registrar para la otra persona</summary>
+          <details className="modal-options-details mb-3">
+            <summary>Otras opciones</summary>
             <Form.Check
               type="switch"
               id="registrar-como-pareja"
@@ -125,7 +121,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
                 setRegistrarComoPareja(e.target.checked);
                 if (e.target.checked) setPagadoPorAmbos(false);
               }}
-              className="mt-3"
+              className="modal-switch-row mt-3"
               disabled={saving}
             />
             <Form.Check
@@ -137,7 +133,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
                 setPagadoPorAmbos(e.target.checked);
                 if (e.target.checked) setRegistrarComoPareja(false);
               }}
-              className="mt-2"
+              className="modal-switch-row mt-2"
               disabled={saving}
             />
           </details>
