@@ -10,6 +10,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
   const [total, setTotal] = useState('');
   const [dividir, setDividir] = useState(false);
   const [registrarComoPareja, setRegistrarComoPareja] = useState(false);
+  const [pagadoPorAmbos, setPagadoPorAmbos] = useState(false);
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
 
@@ -31,8 +32,9 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
     const usuarioEsAlec = user.email?.toLowerCase().includes('alex') ?? false;
     const pagadorEsAlec = registrarComoPareja ? !usuarioEsAlec : usuarioEsAlec;
     const importeParaSaldo = dividir ? Number((totalNum / 2).toFixed(2)) : totalNum;
-    const alecNum = pagadorEsAlec ? importeParaSaldo : 0;
-    const parejaNum = pagadorEsAlec ? 0 : importeParaSaldo;
+    const mitadPagada = Number((totalNum / 2).toFixed(2));
+    const alecNum = pagadoPorAmbos ? mitadPagada : pagadorEsAlec ? importeParaSaldo : 0;
+    const parejaNum = pagadoPorAmbos ? mitadPagada : pagadorEsAlec ? 0 : importeParaSaldo;
 
     savingRef.current = true;
     setSaving(true);
@@ -55,6 +57,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
       setTotal('');
       setDividir(false);
       setRegistrarComoPareja(false);
+      setPagadoPorAmbos(false);
       onHide();
     } catch (err: any) {
       console.error(err);
@@ -118,8 +121,23 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
               id="registrar-como-pareja"
               label="Este gasto lo ha pagado la otra persona"
               checked={registrarComoPareja}
-              onChange={(e) => setRegistrarComoPareja(e.target.checked)}
+              onChange={(e) => {
+                setRegistrarComoPareja(e.target.checked);
+                if (e.target.checked) setPagadoPorAmbos(false);
+              }}
               className="mt-3"
+              disabled={saving}
+            />
+            <Form.Check
+              type="switch"
+              id="pagado-por-ambos"
+              label="Ambos han pagado lo mismo (saldo 0 EUR)"
+              checked={pagadoPorAmbos}
+              onChange={(e) => {
+                setPagadoPorAmbos(e.target.checked);
+                if (e.target.checked) setRegistrarComoPareja(false);
+              }}
+              className="mt-2"
               disabled={saving}
             />
           </details>
