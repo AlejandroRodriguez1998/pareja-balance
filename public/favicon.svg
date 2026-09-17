@@ -1,47 +1,21 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="heart" x1="136" y1="132" x2="376" y2="378" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FF8A8A"/>
-      <stop offset="1" stop-color="#E75959"/>
-    </linearGradient>
-    <linearGradient id="walletBlue" x1="104" y1="158" x2="284" y2="390" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#263A58"/>
-      <stop offset="1" stop-color="#172232"/>
-    </linearGradient>
-    <linearGradient id="walletGreen" x1="228" y1="158" x2="408" y2="390" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#24563D"/>
-      <stop offset="1" stop-color="#12281F"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="512" height="512" rx="112" fill="#101318"/>
-  <rect x="48" y="48" width="416" height="416" rx="96" fill="#161A20" stroke="#2A3039" stroke-width="10"/>
-
-  <path
-    d="M256 424C241 400 178 356 132 306C82 252 72 186 106 137C139 90 204 88 245 134C251 141 255 150 256 160C257 150 261 141 267 134C308 88 373 90 406 137C440 186 430 252 380 306C334 356 271 400 256 424Z"
-    fill="url(#heart)"
-    opacity="0.26"
-  />
-  <path
-    d="M256 424C241 400 178 356 132 306C82 252 72 186 106 137C139 90 204 88 245 134C251 141 255 150 256 160C257 150 261 141 267 134C308 88 373 90 406 137C440 186 430 252 380 306C334 356 271 400 256 424Z"
-    stroke="url(#heart)"
-    stroke-width="18"
-    opacity="0.42"
-  />
-
-  <g transform="rotate(-5 200 282)">
-    <rect x="96" y="174" width="192" height="218" rx="44" fill="url(#walletBlue)" stroke="#41669C" stroke-width="11"/>
-    <path d="M124 206C124 193.85 133.85 184 146 184H238C250.15 184 260 193.85 260 206V228H124V206Z" fill="#314767"/>
-    <circle cx="198" cy="292" r="43" fill="#101318" stroke="#6EA6FF" stroke-width="13"/>
-    <path d="M178 280H219" stroke="#6EA6FF" stroke-width="10" stroke-linecap="round"/>
-    <path d="M178 303H214" stroke="#6EA6FF" stroke-width="10" stroke-linecap="round"/>
-  </g>
-
-  <g transform="rotate(5 312 282)">
-    <rect x="224" y="174" width="192" height="218" rx="44" fill="url(#walletGreen)" stroke="#4A936A" stroke-width="11"/>
-    <path d="M252 206C252 193.85 261.85 184 274 184H366C378.15 184 388 193.85 388 206V228H252V206Z" fill="#2B6045"/>
-    <circle cx="314" cy="292" r="43" fill="#101318" stroke="#7EE2A7" stroke-width="13"/>
-    <path d="M294 280H335" stroke="#7EE2A7" stroke-width="10" stroke-linecap="round"/>
-    <path d="M294 303H330" stroke="#7EE2A7" stroke-width="10" stroke-linecap="round"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+<title id="title">Pareja Balance</title><desc id="desc">Dos tarjetas unidas por un corazón con un signo igual.</desc>
+<defs>
+ <linearGradient id="bg" x1="126" y1="84" x2="866" y2="944" gradientUnits="userSpaceOnUse"><stop stop-color="#16233B"/><stop offset=".46" stop-color="#08111F"/><stop offset="1" stop-color="#10182A"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#285889" stop-opacity=".28"/><stop offset="1" stop-color="#07101E" stop-opacity="0"/></radialGradient>
+ <linearGradient id="blue" x1="326" y1="238" x2="550" y2="786" gradientUnits="userSpaceOnUse"><stop stop-color="#3ADAF4"/><stop offset=".35" stop-color="#137EFF"/><stop offset=".72" stop-color="#073BFA"/><stop offset="1" stop-color="#0A66FF"/></linearGradient>
+ <linearGradient id="green" x1="720" y1="232" x2="532" y2="794" gradientUnits="userSpaceOnUse"><stop stop-color="#55F1A3"/><stop offset=".42" stop-color="#08D58A"/><stop offset=".76" stop-color="#00B984"/><stop offset="1" stop-color="#1BE5B4"/></linearGradient>
+ <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="white" stop-opacity=".34"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient>
+ <linearGradient id="heart" x1="416" y1="350" x2="592" y2="692" gradientUnits="userSpaceOnUse"><stop stop-color="#FF776F" stop-opacity=".9"/><stop offset=".32" stop-color="#FF3F58" stop-opacity=".94"/><stop offset=".73" stop-color="#E40855"/><stop offset="1" stop-color="#C8004A"/></linearGradient>
+ <linearGradient id="heartHi" x1="512" y1="352" x2="512" y2="596" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD0AD" stop-opacity=".62"/><stop offset="1" stop-color="#FF6B8C" stop-opacity="0"/></linearGradient>
+ <filter id="shadow" x="-25%" y="-25%" width="150%" height="165%" color-interpolation-filters="sRGB"><feDropShadow dy="18" stdDeviation="20" flood-color="#00050D" flood-opacity=".55"/></filter>
+</defs>
+<rect x="70" y="70" width="884" height="884" rx="218" fill="url(#bg)" filter="url(#shadow)"/><rect x="72" y="72" width="880" height="880" rx="216" fill="url(#glow)" stroke="#6091FF" stroke-opacity=".36" stroke-width="3"/>
+<g filter="url(#shadow)">
+ <g transform="rotate(-43 400 515)"><rect x="216" y="286" width="368" height="458" rx="72" fill="url(#blue)"/><rect x="219" y="289" width="362" height="452" rx="69" fill="none" stroke="#A8F3FF" stroke-opacity=".43" stroke-width="5"/><path d="M288 289h224a69 69 0 0 1 69 69v75c-105-65-227-91-362-76a69 69 0 0 1 69-68Z" fill="url(#sheen)"/></g>
+ <g transform="rotate(43 624 515)"><rect x="440" y="286" width="368" height="458" rx="72" fill="url(#green)"/><rect x="443" y="289" width="362" height="452" rx="69" fill="none" stroke="#C4FFE1" stroke-opacity=".44" stroke-width="5"/><path d="M512 289h224a69 69 0 0 1 69 69v75c-105-65-227-91-362-76a69 69 0 0 1 69-68Z" fill="url(#sheen)"/></g>
+</g>
+<rect x="253" y="353" width="126" height="68" rx="19" fill="white" fill-opacity=".88" transform="rotate(-43 316 387)"/><rect x="645" y="353" width="126" height="68" rx="19" fill="white" fill-opacity=".88" transform="rotate(43 708 387)"/>
+<g filter="url(#shadow)"><path d="M512 713 379 584c-54-52-62-126-18-171 40-41 105-40 151 8 46-48 111-49 151-8 44 45 36 119-18 171L512 713Z" fill="url(#heart)" stroke="#FF9297" stroke-opacity=".42" stroke-width="4"/><path d="M512 421c-46-48-111-49-151-8-38 39-38 99-3 148 4-64 44-107 97-107 22 0 42 8 57 24 15-16 35-24 57-24 53 0 93 43 97 107 35-49 35-109-3-148-40-41-105-40-151 8Z" fill="url(#heartHi)"/></g>
+<g fill="white"><rect x="436" y="491" width="152" height="38" rx="19"/><rect x="436" y="551" width="152" height="38" rx="19"/></g>
 </svg>
