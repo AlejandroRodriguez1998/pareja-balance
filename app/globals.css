@@ -241,7 +241,15 @@ body {
   transition: transform 160ms ease;
 }
 
-.bottom-nav-link span {
+.bottom-nav-icon-wrap {
+  width: 30px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.bottom-nav-label {
   max-width: 100%;
   overflow: hidden;
   line-height: 1;
@@ -262,12 +270,18 @@ body {
   color: var(--bottom-nav-active);
 }
 
-.bottom-nav-link.is-featured .bottom-nav-icon {
-  width: 30px;
-  height: 30px;
-  padding: 7px;
+.bottom-nav-link.is-featured .bottom-nav-icon-wrap {
+  width: 32px;
+  height: 32px;
+  margin-top: -3px;
+  margin-bottom: -3px;
   border-radius: 50%;
   background: var(--bottom-nav-active-surface);
+}
+
+.bottom-nav-link.is-featured .bottom-nav-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .bottom-nav-link:hover {

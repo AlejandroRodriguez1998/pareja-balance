@@ -34,8 +34,10 @@ export default function BottomNav() {
               aria-current={isActive ? 'page' : undefined}
               className={`bottom-nav-link ${isActive ? 'is-active' : ''} ${'featured' in item ? 'is-featured' : ''}`}
             >
-              <Icon className="bottom-nav-icon" size={22} aria-hidden="true" />
-              <span>{label}</span>
+              <span className="bottom-nav-icon-wrap" aria-hidden="true">
+                <Icon className="bottom-nav-icon" size={22} />
+              </span>
+              <span className="bottom-nav-label">{label}</span>
             </Link>
           );
         })}
