@@ -99,14 +99,14 @@ export default function TasksPage() {
             </div>
             <div className="shared-task-list">
               {pending.length ? pending.map(renderTask) : (
-                <div className="empty-state"><p>No hay tareas pendientes.</p><button type="button" className="inline-action" onClick={() => setShowAdd(true)}>Añadir tarea</button></div>
+                <div className="empty-state task-empty-state"><p><strong>Todo hecho por ahora <span aria-hidden="true">♥</span></strong><small>No tenéis ninguna tarea pendiente.</small></p><button type="button" className="inline-action" onClick={() => setShowAdd(true)}>Añadir tarea</button></div>
               )}
             </div>
           </section>
           <section className="tasks-panel" aria-labelledby="completed-title">
             <div className="section-heading"><div><span className="section-kicker">Hechas</span><h2 id="completed-title">Completadas</h2></div><span className="count-badge">{completed.length}</span></div>
             <div className="shared-task-list">
-              {completed.length ? completed.map(renderTask) : <p className="tasks-empty-copy">Las tareas completadas aparecerán aquí.</p>}
+              {completed.length ? completed.map(renderTask) : <div className="tasks-empty-copy"><strong>Aún no habéis completado ninguna tarea.</strong><span>Cuando terminéis alguna, aparecerá aquí.</span></div>}
             </div>
           </section>
         </div>

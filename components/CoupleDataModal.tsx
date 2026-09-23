@@ -66,7 +66,7 @@ export default function CoupleDataModal({ show, onHide, data = null, focusPlan =
   };
 
   return (
-    <Modal show={show} onHide={onHide} scrollable dialogClassName="app-modal-dialog" contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={onHide} centered scrollable contentClassName="custom-modal-bg">
       <Modal.Header closeButton><Modal.Title>{focusPlan ? 'Añadir plan' : 'Editar nuestra información'}</Modal.Title></Modal.Header>
       <Modal.Body>
         <Form>

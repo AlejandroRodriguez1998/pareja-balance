@@ -88,7 +88,7 @@ export default function UsPage() {
           <section className="couple-grid">
             <article className="couple-card">
               <div className="couple-card-heading"><span><CalendarHeart size={20} /> Próximo plan</span></div>
-              {data?.nextPlan?.title ? <><h2>{data.nextPlan.title}</h2>{data.nextPlan.dateTime && <p>{new Date(data.nextPlan.dateTime).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' })}</p>}<button type="button" className="inline-action" onClick={completeCurrentPlan}>Marcar como realizado</button></> : <div className="compact-empty"><p>Aún no tenéis ningún plan guardado.</p><button type="button" className="inline-action" onClick={() => setShowPlan(true)}>Añadir plan</button></div>}
+              {data?.nextPlan?.title ? <><h2>{data.nextPlan.title}</h2>{data.nextPlan.dateTime && <p>{new Date(data.nextPlan.dateTime).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' })}</p>}<button type="button" className="plan-complete-action" onClick={completeCurrentPlan}><Check2Circle aria-hidden="true" /> Marcar como realizado</button></> : <div className="compact-empty"><p>Aún no tenéis ningún plan guardado.</p><button type="button" className="inline-action" onClick={() => setShowPlan(true)}>Añadir plan</button></div>}
             </article>
             <article className="couple-card">
               <div className="couple-card-heading"><span><Stars size={20} /> Objetivos juntos</span></div>

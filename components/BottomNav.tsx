@@ -3,15 +3,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Check2Square,
-  CashCoin,
   EggFried,
   HeartFill,
   HouseDoorFill,
+  Receipt,
 } from 'react-bootstrap-icons';
 
 const navigationItems = [
   { href: '/dashboard', label: 'Inicio', icon: HouseDoorFill },
-  { href: '/history', label: 'Gastos', icon: CashCoin },
+  { href: '/history', label: 'Gastos', icon: Receipt },
   { href: '/us', label: 'Nosotros', icon: HeartFill, featured: true },
   { href: '/tasks', label: 'Tareas', icon: Check2Square },
   { href: '/meals', label: 'Comidas', icon: EggFried },

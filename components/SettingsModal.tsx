@@ -58,7 +58,7 @@ export default function SettingsModal({ show, onHide }: { show: boolean; onHide:
   };
 
   return (
-    <Modal show={show} onHide={onHide} onEnter={syncSettings} scrollable dialogClassName="app-modal-dialog" contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={onHide} onEnter={syncSettings} centered scrollable contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title>Configuración</Modal.Title>
       </Modal.Header>

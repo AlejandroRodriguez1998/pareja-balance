@@ -78,7 +78,7 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
   };
 
   return (
-    <Modal show={show} onHide={closeIfIdle} dialogClassName="app-modal-dialog" contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title>{task ? 'Editar tarea' : 'Añadir tarea'}</Modal.Title>
       </Modal.Header>
