@@ -2,14 +2,15 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { getUserPairId } from '@/lib/pairs';
 import TopNav from '@/components/TopNav';
 import BottomNav from '@/components/BottomNav';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import EditExpenseModal from '@/components/EditExpenseModal';
-import { ArrowRight, Receipt, Wallet2 } from 'react-bootstrap-icons';
+import { ArrowRight, Check2Square, EggFried, HeartFill, Receipt, Wallet2 } from 'react-bootstrap-icons';
+import type { CoupleData, SharedTask } from '@/lib/types';
 
 type Expense = {
   id: string;
@@ -20,12 +21,17 @@ type Expense = {
   date?: { seconds: number };
 };
 
+type ExpenseData = Omit<Expense, 'id'>;
+
 export default function DashboardPage() {
   const [balance, setBalance] = useState(0);
   const [totalAlec, setTotalAlec] = useState(0);
   const [totalMario, setTotalMario] = useState(0);
   const [lastExpenses, setLastExpenses] = useState<Expense[]>([]);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [weekMeals, setWeekMeals] = useState<string[]>([]);
+  const [weekTasks, setWeekTasks] = useState<SharedTask[]>([]);
+  const [coupleData, setCoupleData] = useState<CoupleData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const balanceTone = balance > 0 ? 'positive' : balance < 0 ? 'negative' : 'neutral';
@@ -69,7 +75,7 @@ export default function DashboardPage() {
             const allExpenses: Expense[] = [];
 
             snap.forEach((d) => {
-              const e = d.data() as any;
+              const e = d.data() as ExpenseData;
               totalAlecTemp += Number(e.pagadoAlec || 0);
               totalMarioTemp += Number(e.pagadoMario || 0);
               allExpenses.push({
@@ -109,6 +115,38 @@ export default function DashboardPage() {
       unsubscribeAuth();
       if (unsubscribeExpenses) unsubscribeExpenses();
     };
+  }, []);
+
+  useEffect(() => {
+    const dataUnsubscribers: Array<() => void> = [];
+    let cancelled = false;
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      dataUnsubscribers.splice(0).forEach((unsubscribe) => unsubscribe());
+      if (!user) return;
+      try {
+        const pairId = await getUserPairId(user.uid);
+        if (!pairId || cancelled) return;
+        dataUnsubscribers.push(onSnapshot(query(collection(db, 'meals'), where('pairId', '==', pairId)), (snapshot) => {
+          const todayIndex = (new Date().getDay() + 6) % 7;
+          const meals = snapshot.docs
+            .map((mealDoc) => mealDoc.data() as { day?: number; name?: string })
+            .filter((meal) => Number(meal.day) >= todayIndex && meal.name)
+            .sort((a, b) => Number(a.day) - Number(b.day))
+            .slice(0, 3)
+            .map((meal) => meal.name as string);
+          setWeekMeals(meals);
+        }));
+        dataUnsubscribers.push(onSnapshot(query(collection(db, 'tasks'), where('pairId', '==', pairId)), (snapshot) => {
+          setWeekTasks(snapshot.docs.map((taskDoc) => ({ id: taskDoc.id, ...taskDoc.data() } as SharedTask)));
+        }));
+        dataUnsubscribers.push(onSnapshot(doc(db, 'coupleData', pairId), (snapshot) => {
+          setCoupleData(snapshot.exists() ? snapshot.data() as CoupleData : null);
+        }));
+      } catch (error) {
+        console.error('Error loading weekly summary:', error);
+      }
+    });
+    return () => { cancelled = true; unsubscribeAuth(); dataUnsubscribers.forEach((unsubscribe) => unsubscribe()); };
   }, []);
 
   if (loading) {
@@ -160,6 +198,33 @@ export default function DashboardPage() {
             <div className="dashboard-stat-card">
               <span>Mario</span>
               <strong>{totalMario.toFixed(2)} EUR</strong>
+            </div>
+          </section>
+
+          <section className="week-summary" aria-labelledby="week-summary-title">
+            <div className="section-heading week-summary-heading">
+              <div><span className="section-kicker">En común</span><h2 id="week-summary-title">Nuestra semana</h2></div>
+            </div>
+            <div className="week-summary-grid">
+              <Link href="/meals" className="week-summary-card is-featured-meal">
+                <span className="week-summary-icon"><EggFried /></span>
+                <div>
+                  <span className="week-summary-label">Próxima comida</span>
+                  <strong>{weekMeals[0] || 'Nada planeado todavía'}</strong>
+                  {weekMeals.length > 1 && <small>Y {weekMeals.length - 1} más esta semana</small>}
+                </div>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+              <Link href="/us" className="week-summary-card is-compact is-couple">
+                <span className="week-summary-icon"><HeartFill /></span>
+                <div><strong>Nosotros</strong><small>{coupleData?.nextPlan?.title || 'Sin próximo plan'}</small></div>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+              <Link href="/tasks" className="week-summary-card is-compact">
+                <span className="week-summary-icon"><Check2Square /></span>
+                <div><strong>Tareas</strong><small>{weekTasks.filter((task) => !task.completed).length} pendientes</small></div>
+                <ArrowRight aria-hidden="true" />
+              </Link>
             </div>
           </section>
 
@@ -217,10 +282,11 @@ export default function DashboardPage() {
             )}
 
             <Link href="/history" className="history-link">
-              Ver historial completo
+              Ver todos los gastos
               <ArrowRight size={18} />
             </Link>
           </section>
+
         </div>
       </main>
 

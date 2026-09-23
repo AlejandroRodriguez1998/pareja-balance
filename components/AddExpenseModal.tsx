@@ -59,9 +59,9 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
       setRegistrarComoPareja(false);
       setPagadoPorAmbos(false);
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(`Error al guardar: ${err.message}`);
+      alert(`Error al guardar: ${err instanceof Error ? err.message : 'Error desconocido'}`);
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -71,13 +71,13 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
   return (
     <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
-        <Modal.Title className="text-white">Anadir gasto</Modal.Title>
+        <Modal.Title>Anadir gasto</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Descripcion:</Form.Label>
+            <Form.Label>Descripcion:</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ejemplo: Supermercado"
@@ -88,7 +88,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Total:</Form.Label>
+            <Form.Label>Total:</Form.Label>
             <Form.Control
               type="number"
               step="0.01"

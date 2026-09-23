@@ -18,6 +18,8 @@ type Meal = {
   createdAt?: { seconds: number } | Date;
 };
 
+type MealData = Omit<Meal, 'id'>;
+
 export default function MealsPage() {
   const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -57,7 +59,7 @@ export default function MealsPage() {
           unsubscribeMeals = onSnapshot(mealsQuery, (snap) => {
             const items: Meal[] = [];
             snap.forEach((d) => {
-              const data = d.data() as any;
+              const data = d.data() as MealData;
               items.push({
                 id: d.id,
                 day: Number(data.day ?? 0),
@@ -87,9 +89,9 @@ export default function MealsPage() {
 
   const getMealTime = (meal: Meal) => {
     if (!meal.createdAt) return 0;
-    const anyDate = meal.createdAt as any;
-    if (typeof anyDate.seconds === 'number') return anyDate.seconds;
-    if (anyDate instanceof Date) return Math.floor(anyDate.getTime() / 1000);
+    const createdAt = meal.createdAt;
+    if (createdAt instanceof Date) return Math.floor(createdAt.getTime() / 1000);
+    if (typeof createdAt === 'object' && 'seconds' in createdAt) return createdAt.seconds;
     return 0;
   };
 

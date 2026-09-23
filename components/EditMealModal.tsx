@@ -53,9 +53,9 @@ export default function EditMealModal({
         updatedAt: new Date(),
       });
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert('Error al guardar cambios: ' + err.message);
+      alert('Error al guardar cambios: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -74,9 +74,9 @@ export default function EditMealModal({
     try {
       await deleteDoc(doc(db, 'meals', meal.id));
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert('Error al eliminar: ' + err.message);
+      alert('Error al eliminar: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -86,13 +86,13 @@ export default function EditMealModal({
   return (
     <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
-        <Modal.Title className="text-white">Editar comida</Modal.Title>
+        <Modal.Title>Editar comida</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Comida</Form.Label>
+            <Form.Label>Comida</Form.Label>
             <Form.Control
               type="text"
               value={name}
@@ -102,7 +102,7 @@ export default function EditMealModal({
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Dia</Form.Label>
+            <Form.Label>Dia</Form.Label>
             <div className="meal-day-picker">
               {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((label, index) => (
                 <button

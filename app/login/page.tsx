@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState(''); 
@@ -15,8 +15,8 @@ export default function LoginPage() {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard');
-    } catch (e: any) {
-      alert(e.message);
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : 'No se pudo iniciar sesión.');
     } finally { setLoading(false); }
   };
 

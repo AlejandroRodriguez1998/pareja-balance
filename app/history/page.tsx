@@ -25,6 +25,8 @@ type Expense = {
   date?: { seconds: number };
 };
 
+type ExpenseData = Omit<Expense, 'id'>;
+
 type WeekGroup = {
   weekStart: string;
   weekEnd: string;
@@ -73,7 +75,7 @@ export default function HistoryPage() {
           unsubscribeExpenses = onSnapshot(q, (snap) => {
             const data: Expense[] = [];
             snap.forEach((d) => {
-              const e = d.data() as any;
+              const e = d.data() as ExpenseData;
               data.push({
                 id: d.id,
                 description: e.description,
@@ -136,7 +138,7 @@ export default function HistoryPage() {
 
   return (
     <AuthGuard>
-      <TopNav title="Historial" />
+      <TopNav title="Gastos" />
       <main className="dashboard-shell">
         <div className="container dashboard-container">
           {weeks.length === 0 ? (

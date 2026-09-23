@@ -7,8 +7,21 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const themeScript = `
+    try {
+      const savedTheme = localStorage.getItem('pareja-balance-theme');
+      const theme = savedTheme === 'light' || savedTheme === 'dark'
+        ? savedTheme
+        : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) themeColor.content = theme === 'dark' ? '#101318' : '#f4f6f8';
+    } catch (_) {}
+  `;
+
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#101318" />
@@ -21,7 +34,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* ✅ Forzar color oscuro igual que bg-dark */}
         <meta name="background-color" content="#101318" />
-        <meta name="color-scheme" content="dark" />
+        <meta name="color-scheme" content="light dark" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
 
         {/* 🔧 Compatibilidad general */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
@@ -33,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       </head>
-      <body style={{ backgroundColor: '#101318', color: 'white' }}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

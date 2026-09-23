@@ -41,9 +41,9 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
       });
       setName('');
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(`Error al guardar: ${err.message}`);
+      alert(`Error al guardar: ${err instanceof Error ? err.message : 'Error desconocido'}`);
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -53,13 +53,13 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
   return (
     <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
-        <Modal.Title className="text-white">Anadir comida</Modal.Title>
+        <Modal.Title>Anadir comida</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Comida</Form.Label>
+            <Form.Label>Comida</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ejemplo: Lentejas"
@@ -70,7 +70,7 @@ export default function AddMealModal({ show, onHide }: { show: boolean; onHide: 
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Dia</Form.Label>
+            <Form.Label>Dia</Form.Label>
             <div className="meal-day-picker">
               {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((label, index) => (
                 <button

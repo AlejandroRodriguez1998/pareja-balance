@@ -7,7 +7,13 @@ import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 type Props = {
   show: boolean;
   onHide: () => void;
-  expense: any | null;
+  expense: {
+    id: string;
+    description: string;
+    total: number;
+    pagadoAlec: number;
+    pagadoMario: number;
+  } | null;
 };
 
 export default function EditExpenseModal({ show, onHide, expense }: Props) {
@@ -55,9 +61,9 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
         updatedAt: new Date(),
       });
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert('Error al guardar cambios: ' + err.message);
+      alert('Error al guardar cambios: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -75,9 +81,9 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
     try {
       await deleteDoc(doc(db, 'expenses', expense.id));
       onHide();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert('Error al eliminar: ' + err.message);
+      alert('Error al eliminar: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       savingRef.current = false;
       setSaving(false);
@@ -87,13 +93,13 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
   return (
     <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
-        <Modal.Title className="text-white">Editar gasto</Modal.Title>
+        <Modal.Title>Editar gasto</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Descripcion</Form.Label>
+            <Form.Label>Descripcion</Form.Label>
             <Form.Control
               type="text"
               value={descripcion}
@@ -103,7 +109,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="text-white">Total (EUR)</Form.Label>
+            <Form.Label>Total (EUR)</Form.Label>
             <Form.Control
               type="number"
               step="0.01"
@@ -116,7 +122,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
           <div className="row">
             <div className="col-6">
               <Form.Group className="mb-3">
-                <Form.Label className="text-white">Alejandro</Form.Label>
+                <Form.Label>Alejandro</Form.Label>
                 <Form.Control
                   type="number"
                   step="0.01"
@@ -128,7 +134,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
             </div>
             <div className="col-6">
               <Form.Group className="mb-3">
-                <Form.Label className="text-white">Mario</Form.Label>
+                <Form.Label>Mario</Form.Label>
                 <Form.Control
                   type="number"
                   step="0.01"
