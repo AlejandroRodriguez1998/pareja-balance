@@ -69,7 +69,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
   };
 
   return (
-    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} dialogClassName="app-modal-dialog" contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title>Anadir gasto</Modal.Title>
       </Modal.Header>

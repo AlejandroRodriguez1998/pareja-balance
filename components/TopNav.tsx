@@ -32,6 +32,11 @@ export default function TopNav({ title, onAddClick }: Props) {
   };
 
   const handleDefaultAdd = () => {
+    if (pathname === '/history') {
+      chooseAction('expense');
+      return;
+    }
+
     if (pathname === '/dashboard') {
       const favorite = localStorage.getItem('pareja-balance-favorite-action');
       if (favorite === 'expense' || favorite === 'meal' || favorite === 'task' || favorite === 'plan') {
@@ -60,7 +65,7 @@ export default function TopNav({ title, onAddClick }: Props) {
 
       {!onAddClick && (
         <>
-          <Modal show={showActions} onHide={() => setShowActions(false)} centered dialogClassName="quick-action-dialog" contentClassName="custom-modal-bg quick-action-sheet">
+          <Modal show={showActions} onHide={() => setShowActions(false)} dialogClassName="app-modal-dialog quick-action-dialog" contentClassName="custom-modal-bg quick-action-sheet">
             <Modal.Header closeButton><Modal.Title>Añadir</Modal.Title></Modal.Header>
             <Modal.Body>
               <div className="quick-action-list">

@@ -84,7 +84,7 @@ export default function EditMealModal({
   };
 
   return (
-    <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
+    <Modal show={show} onHide={closeIfIdle} dialogClassName="app-modal-dialog" contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
         <Modal.Title>Editar comida</Modal.Title>
       </Modal.Header>
