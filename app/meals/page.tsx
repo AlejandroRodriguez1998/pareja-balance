@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
@@ -9,7 +9,8 @@ import BottomNav from '@/components/BottomNav';
 import AuthGuard from '@/components/AuthGuard';
 import AddMealModal from '@/components/AddMealModal';
 import EditMealModal from '@/components/EditMealModal';
-import { EggFried } from 'react-bootstrap-icons';
+import ShoppingList, { type ShoppingListHandle } from '@/components/ShoppingList';
+import { Basket2, EggFried } from 'react-bootstrap-icons';
 
 type Meal = {
   id: string;
@@ -26,6 +27,9 @@ export default function MealsPage() {
   const [showAddMeal, setShowAddMeal] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pairId, setPairId] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<'meals' | 'shopping'>('meals');
+  const shoppingListRef = useRef<ShoppingListHandle>(null);
 
   useEffect(() => {
     let unsubscribeMeals: (() => void) | null = null;
@@ -53,6 +57,8 @@ export default function MealsPage() {
             setLoading(false);
             return;
           }
+
+          setPairId(resolvedPairId);
 
           const mealsQuery = query(collection(db, 'meals'), where('pairId', '==', resolvedPairId));
 
@@ -114,7 +120,10 @@ export default function MealsPage() {
 
   return (
     <AuthGuard>
-      <TopNav title="Comidas" onAddClick={() => setShowAddMeal(true)} />
+      <TopNav title="Comidas" onAddClick={() => {
+        if (activeView === 'shopping') shoppingListRef.current?.focusInput();
+        else setShowAddMeal(true);
+      }} />
       <AddMealModal show={showAddMeal} onHide={() => setShowAddMeal(false)} />
       <EditMealModal
         show={!!selectedMeal}
@@ -124,6 +133,14 @@ export default function MealsPage() {
 
       <main className="dashboard-shell">
         <div className="container dashboard-container">
+          <div className="meals-view-switcher" role="tablist" aria-label="Vista de comidas">
+            <button type="button" role="tab" aria-selected={activeView === 'meals'} className={activeView === 'meals' ? 'is-active' : ''} onClick={() => setActiveView('meals')}><EggFried aria-hidden="true" />Comidas</button>
+            <button type="button" role="tab" aria-selected={activeView === 'shopping'} className={activeView === 'shopping' ? 'is-active' : ''} onClick={() => setActiveView('shopping')}><Basket2 aria-hidden="true" />Lista de compra</button>
+          </div>
+
+          {activeView === 'shopping' && pairId ? <ShoppingList ref={shoppingListRef} pairId={pairId} /> : activeView === 'shopping' ? (
+            <div className="empty-state">No se encontró una pareja asociada.</div>
+          ) : <>
           <section className="today-meal-panel">
             <div>
               <span className="section-kicker">Hoy</span>
@@ -221,6 +238,7 @@ export default function MealsPage() {
               })}
             </div>
           </section>
+          </>}
         </div>
       </main>
       <BottomNav />

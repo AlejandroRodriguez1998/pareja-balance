@@ -8,6 +8,32 @@ export type SharedTask = {
   completedAt?: { seconds: number } | Date | null;
 };
 
+export const SHOPPING_CATEGORIES = [
+  'Fruta y verdura',
+  'Carne y pescado',
+  'Lácteos',
+  'Panadería',
+  'Despensa',
+  'Congelados',
+  'Limpieza',
+  'Higiene',
+  'Bebidas',
+  'Otros',
+] as const;
+
+export type ShoppingCategory = typeof SHOPPING_CATEGORIES[number];
+
+export type ShoppingItem = {
+  id: string;
+  pairId: string;
+  name: string;
+  category: ShoppingCategory;
+  completed: boolean;
+  createdAt?: { seconds: number } | Date | null;
+  completedAt?: { seconds: number } | Date | null;
+  createdBy?: string;
+};
+
 export type CoupleGoal = {
   id: string;
   title: string;
