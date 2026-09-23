@@ -121,7 +121,7 @@ const ShoppingList = forwardRef<ShoppingListHandle, Props>(function ShoppingList
       </form>
 
       {loading ? <div className="shopping-list-loading" role="status">Cargando lista...</div> : items.length === 0 ? (
-        <div className="shopping-empty-state"><Basket2 size={34} aria-hidden="true" /><strong>Lista vacía por ahora</strong><p>Añadid lo que necesitéis y aparecerá aquí para los dos.</p></div>
+        <div className="shopping-empty-state"><Basket2 size={34} aria-hidden="true" /><strong>Lista vacía por ahora</strong><p>Añadid lo que necesitéis y aparecerá aquí.</p></div>
       ) : (
         <div className="shopping-list-content">
           {pendingByCategory.map(({ category, items: categoryItems }) => (
