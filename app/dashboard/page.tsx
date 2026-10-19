@@ -29,7 +29,10 @@ export default function DashboardPage() {
   const [totalMario, setTotalMario] = useState(0);
   const [lastExpenses, setLastExpenses] = useState<Expense[]>([]);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
-  const [weekMeals, setWeekMeals] = useState<string[]>([]);
+  const [upcomingMeals, setUpcomingMeals] = useState<{ today: string[]; tomorrow: string[] }>({
+    today: [],
+    tomorrow: [],
+  });
   const [weekTasks, setWeekTasks] = useState<SharedTask[]>([]);
   const [coupleData, setCoupleData] = useState<CoupleData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -128,13 +131,14 @@ export default function DashboardPage() {
         if (!pairId || cancelled) return;
         dataUnsubscribers.push(onSnapshot(query(collection(db, 'meals'), where('pairId', '==', pairId)), (snapshot) => {
           const todayIndex = (new Date().getDay() + 6) % 7;
+          const tomorrowIndex = (todayIndex + 1) % 7;
           const meals = snapshot.docs
             .map((mealDoc) => mealDoc.data() as { day?: number; name?: string })
-            .filter((meal) => Number(meal.day) >= todayIndex && meal.name)
-            .sort((a, b) => Number(a.day) - Number(b.day))
-            .slice(0, 3)
-            .map((meal) => meal.name as string);
-          setWeekMeals(meals);
+            .filter((meal) => meal.name);
+          setUpcomingMeals({
+            today: meals.filter((meal) => Number(meal.day) === todayIndex).map((meal) => meal.name as string),
+            tomorrow: meals.filter((meal) => Number(meal.day) === tomorrowIndex).map((meal) => meal.name as string),
+          });
         }));
         dataUnsubscribers.push(onSnapshot(query(collection(db, 'tasks'), where('pairId', '==', pairId)), (snapshot) => {
           setWeekTasks(snapshot.docs.map((taskDoc) => ({ id: taskDoc.id, ...taskDoc.data() } as SharedTask)));
@@ -209,9 +213,9 @@ export default function DashboardPage() {
               <Link href="/meals" className="week-summary-card is-featured-meal">
                 <span className="week-summary-icon"><EggFried /></span>
                 <div>
-                  <span className="week-summary-label">Próxima comida</span>
-                  <strong>{weekMeals[0] || 'Nada planeado todavía'}</strong>
-                  {weekMeals.length > 1 && <small>Y {weekMeals.length - 1} más esta semana</small>}
+                  <span className="week-summary-label">Hoy</span>
+                  <strong>{upcomingMeals.today.join(' · ') || 'Nada planeado para hoy'}</strong>
+                  <small>Mañana: {upcomingMeals.tomorrow.join(' · ') || 'nada planeado'}</small>
                 </div>
                 <ArrowRight aria-hidden="true" />
               </Link>
