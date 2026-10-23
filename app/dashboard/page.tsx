@@ -10,6 +10,7 @@ import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import EditExpenseModal from '@/components/EditExpenseModal';
 import { ArrowRight, Check2Square, EggFried, HeartFill, Receipt, Wallet2 } from 'react-bootstrap-icons';
+import ElectricityCard from '@/components/ElectricityCard';
 import type { CoupleData, SharedTask } from '@/lib/types';
 
 type Expense = {
@@ -231,6 +232,8 @@ export default function DashboardPage() {
               </Link>
             </div>
           </section>
+
+          <ElectricityCard />
 
           <section className="recent-expenses-panel">
             <div className="section-heading">

@@ -1,5 +1,55 @@
 @import "tailwindcss";
 
+.electricity-entry { margin-bottom: 20px; }
+.electricity-traffic-light { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 30px; flex: 0 0 30px; padding: 7px 0; background: #18212b; border: 1px solid #46515f; border-radius: 12px; }
+.electricity-traffic-light > span { width: 11px; height: 11px; border-radius: 50%; background: #34404d; }
+.electricity-traffic-light.is-expensive .traffic-red { background: #ff6262; box-shadow: 0 0 8px #ff626288; }
+.electricity-traffic-light.is-medium .traffic-amber { background: #ffce55; box-shadow: 0 0 8px #ffce5588; }
+.electricity-traffic-light.is-cheap .traffic-green { background: #4cdd99; box-shadow: 0 0 8px #4cdd9988; }
+.electricity-entry .electricity-card-hint { font-size: .65rem; }
+.electricity-tone-cheap { --price-color: #168653; color: var(--price-color); }
+.electricity-tone-medium { --price-color: #976300; color: var(--price-color); }
+.electricity-tone-expensive { --price-color: #c23242; color: var(--price-color); }
+html[data-theme="dark"] .electricity-tone-cheap { --price-color: #7ee2a7; }
+html[data-theme="dark"] .electricity-tone-medium { --price-color: #ffce55; }
+html[data-theme="dark"] .electricity-tone-expensive { --price-color: #ff929c; }
+.electricity-chart-detail { display: grid; gap: 5px; padding: 12px; margin-bottom: 12px; background: var(--app-surface-inset); border-radius: 12px; min-height: 72px; }
+.electricity-chart-detail > span { color: var(--app-text-soft); font-size: .85rem; }
+.electricity-chart-scroll { overflow-x: auto; border-radius: 6px; }
+.electricity-chart-svg { display: block; width: 100%; min-width: 620px; }
+.chart-axis-label { fill: var(--app-text-muted); font-size: 11px; }
+.chart-grid { stroke: var(--app-border); stroke-dasharray: 3 4; }
+.chart-zero { stroke: var(--app-text-muted); }
+.chart-price-bar { fill: var(--price-color); cursor: pointer; }
+.chart-price-bar.is-selected, .chart-price-bar:focus-visible { stroke: var(--app-text); stroke-width: 2; outline: none; }
+.chart-current-label { fill: var(--app-text); font-size: 12px; font-weight: 800; }
+.electricity-chart-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 8px; font-size: .8rem; }
+.electricity-chart .electricity-chart-note { margin: 12px 0 0; font-size: .75rem; }
+.electricity-page { display: grid; gap: 18px; }
+.electricity-page h1 { font-size: 1.7rem; font-weight: 750; margin: 6px 0; }
+.electricity-page h2 { font-size: 1.15rem; font-weight: 700; }
+.electricity-page p, .electricity-source { color: var(--app-text-muted); font-size: .88rem; }
+.electricity-panel { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 18px; padding: 20px; min-width: 0; }
+.electricity-current { background: var(--app-accent-surface); }
+.electricity-current > strong { display: block; font-size: clamp(1.8rem, 7vw, 2.8rem); margin: 8px 0; }
+.electricity-current small { font-size: 1rem; }
+.electricity-current p { margin-bottom: 0; }
+.electricity-cheapest { padding-left: 20px; margin-bottom: 0; }
+.electricity-cheapest li { padding: 9px 0; }
+.electricity-cheapest strong { display: block; color: var(--state-positive); }
+.electricity-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.electricity-table th, .electricity-table td { padding: 10px 6px; border-bottom: 1px solid var(--app-border); }
+.electricity-table th { text-align: left; font-weight: 500; }
+.electricity-table th small { font-size: .65rem; color: var(--app-text-muted); }
+.electricity-table td { width: 44%; text-align: right; }
+.electricity-table thead th:last-child { text-align: right; }
+.electricity-bar { display: block; height: 4px; margin: 5px 0 0 auto; border-radius: 4px; background: var(--accent-secondary); }
+.electricity-active { background: var(--accent-secondary-surface); }
+.electricity-source a { color: var(--accent-secondary); }
+.electricity-page .dashboard-stat-card { min-width: 0; }
+.electricity-page .dashboard-stat-card strong { font-size: 1rem; }
+.electricity-page .dashboard-stat-card small { font-size: .7rem; color: var(--app-text-muted); }
+
 :root {
   --background: #ffffff;
   --foreground: #352f2f;
