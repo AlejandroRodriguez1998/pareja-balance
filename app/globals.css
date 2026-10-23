@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 .electricity-entry { margin-bottom: 20px; }
+.app-top-nav .electricity-back-button { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; background: var(--app-surface-raised); border-color: var(--app-border); }
+.electricity-back-button:hover { background: var(--app-surface-inset); }
+.electricity-back-button:focus-visible { outline: 2px solid var(--accent-secondary); outline-offset: 3px; }
 .electricity-traffic-light { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 30px; flex: 0 0 30px; padding: 7px 0; background: #18212b; border: 1px solid #46515f; border-radius: 12px; }
 .electricity-traffic-light > span { width: 11px; height: 11px; border-radius: 50%; background: #34404d; }
 .electricity-traffic-light.is-expensive .traffic-red { background: #ff6262; box-shadow: 0 0 8px #ff626288; }
@@ -9,9 +12,13 @@
 .electricity-entry .electricity-card-hint { font-size: .65rem; }
 .electricity-tone-cheap { --price-color: #168653; color: var(--price-color); }
 .electricity-tone-medium { --price-color: #976300; color: var(--price-color); }
+.electricity-tone-lower-medium { --price-color: #2563eb; color: var(--price-color); }
+.electricity-tone-upper-medium { --price-color: #976300; color: var(--price-color); }
 .electricity-tone-expensive { --price-color: #c23242; color: var(--price-color); }
 html[data-theme="dark"] .electricity-tone-cheap { --price-color: #7ee2a7; }
 html[data-theme="dark"] .electricity-tone-medium { --price-color: #ffce55; }
+html[data-theme="dark"] .electricity-tone-lower-medium { --price-color: #6ea6ff; }
+html[data-theme="dark"] .electricity-tone-upper-medium { --price-color: #ffce55; }
 html[data-theme="dark"] .electricity-tone-expensive { --price-color: #ff929c; }
 .electricity-chart-detail { display: grid; gap: 5px; padding: 12px; margin-bottom: 12px; background: var(--app-surface-inset); border-radius: 12px; min-height: 72px; }
 .electricity-chart-detail > span { color: var(--app-text-soft); font-size: .85rem; }

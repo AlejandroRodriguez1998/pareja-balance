@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { electricityPrice, electricityRange, electricityStatus, electricityStatusLabels, electricityTime, type ElectricityHour } from '@/lib/electricity';
+import { electricityPrice, electricityRange, electricityChartStatus, electricityChartStatusLabels, electricityTime, type ElectricityHour } from '@/lib/electricity';
 
 export default function ElectricityChart({ hours, current }: { hours: ElectricityHour[]; current?: ElectricityHour }) {
   const titleId = useId();
@@ -17,14 +17,14 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
   const y = (value: number) => plotTop + plotHeight * (top - value) / (top - bottom);
   const zero = y(0);
   const step = plotWidth / hours.length;
-  const status = electricityStatus(selected.price, hours);
+  const status = electricityChartStatus(selected.price, hours);
 
   return <section className="electricity-panel electricity-chart" aria-labelledby={titleId}>
     <h2 id={titleId}>El precio de un vistazo</h2>
     <p>Toca una barra para ver su precio. Desliza la gráfica para recorrer las horas.</p>
     <div className={`electricity-chart-detail electricity-tone-${status}`} aria-live="polite" aria-atomic="true">
       <span>{electricityRange(selected)}{selected.datetime === current?.datetime ? ' · Ahora' : ''}</span>
-      <strong>{electricityPrice(selected.price)} €/kWh · {electricityStatusLabels[status]}</strong>
+      <strong>{electricityPrice(selected.price)} €/kWh · {electricityChartStatusLabels[status]}</strong>
     </div>
     <div className="electricity-chart-scroll" role="region" aria-label="Gráfica de precios por hora, desplazable" tabIndex={0}>
       <svg viewBox="0 0 760 295" className="electricity-chart-svg" role="group" aria-label="Precio PVPC por hora en euros por kilovatio hora">
@@ -35,10 +35,10 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
         })}
         <line x1={left} x2={left + plotWidth} y1={zero} y2={zero} className="chart-zero" />
         {hours.map((hour, index) => {
-          const band = electricityStatus(hour.price, hours);
+          const band = electricityChartStatus(hour.price, hours);
           const active = hour.datetime === current?.datetime;
           const chosen = hour.datetime === selected.datetime;
-          const label = `${electricityRange(hour)}: ${electricityPrice(hour.price)} euros por kWh. ${electricityStatusLabels[band]}${active ? '. Hora actual' : ''}`;
+          const label = `${electricityRange(hour)}: ${electricityPrice(hour.price)} euros por kWh. ${electricityChartStatusLabels[band]}${active ? '. Hora actual' : ''}`;
           const x = left + index * step + 3;
           return <g key={hour.datetime}>
             <rect x={x} y={Math.min(y(hour.price), zero)} width={step - 6} height={Math.max(2, Math.abs(zero - y(hour.price)))} rx={3}
@@ -53,7 +53,7 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
         })}
       </svg>
     </div>
-    <div className="electricity-chart-legend"><span className="electricity-tone-cheap">● Bajo</span><span className="electricity-tone-medium">● Medio</span><span className="electricity-tone-expensive">● Alto</span><span>● Hora actual</span></div>
-    <p className="electricity-chart-note">Colores según los tercios de precios de hoy. No indican una tarifa fija. En el cambio de hora, consulta el desfase UTC al seleccionar una barra.</p>
+    <div className="electricity-chart-legend"><span className="electricity-tone-cheap">● Bajo</span><span className="electricity-tone-lower-medium">● Medio-bajo</span><span className="electricity-tone-upper-medium">● Medio-alto</span><span className="electricity-tone-expensive">● Alto</span><span>● Hora actual</span></div>
+    <p className="electricity-chart-note">Colores según los cuartiles de precios de hoy: cuatro grupos de menor a mayor precio, manteniendo los precios iguales en el mismo grupo. No indican una tarifa fija. En el cambio de hora, consulta el desfase UTC al seleccionar una barra.</p>
   </section>;
 }

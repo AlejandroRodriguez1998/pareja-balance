@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { ArrowLeft } from 'react-bootstrap-icons';
 import AuthGuard from '@/components/AuthGuard';
 import BottomNav from '@/components/BottomNav';
 import { electricityPrice, electricityRange, electricityTime } from '@/lib/electricity';
@@ -20,7 +21,13 @@ function ElectricityContent() {
   const cheapHours = new Set(ranked.slice(0, 3).map((hour) => hour.datetime));
 
   return <>
-    <nav className="app-top-nav" aria-label="Luz"><Link href="/dashboard" className="nav-icon-button" aria-label="Volver a Inicio">←</Link><h5>Luz</h5><span /></nav>
+    <nav className="app-top-nav" aria-label="Luz">
+      <Link href="/dashboard" className="nav-icon-button electricity-back-button" aria-label="Volver a Inicio">
+        <ArrowLeft size={20} aria-hidden="true" />
+      </Link>
+      <h5>Luz</h5>
+      <span />
+    </nav>
     <main className="dashboard-shell"><div className="container dashboard-container electricity-page">
       <header><span className="section-kicker">PVPC · Península</span><h1>La luz, hora a hora</h1><p>Precios de hoy, {new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(now))}.</p></header>
       {loading && !hours.length && <p role="status">Consultando los precios oficiales…</p>}
