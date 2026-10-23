@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import AuthGuard from '@/components/AuthGuard';
 import BottomNav from '@/components/BottomNav';
-import { electricityPrice, electricityRange } from '@/lib/electricity';
+import { electricityPrice, electricityRange, electricityTime } from '@/lib/electricity';
 import { useElectricity } from '@/lib/useElectricity';
 import ElectricityChart from '@/components/ElectricityChart';
 
@@ -18,6 +18,7 @@ function ElectricityContent() {
   const cheapest = ranked[0];
   const highest = ranked[ranked.length - 1];
   const average = hours.length ? hours.reduce((sum, hour) => sum + hour.price, 0) / hours.length : 0;
+  const cheapHours = new Set(ranked.slice(0, 3).map((hour) => hour.datetime));
 
   return <>
     <nav className="app-top-nav" aria-label="Luz">
@@ -38,8 +39,39 @@ function ElectricityContent() {
           <div className="dashboard-stat-card"><span>Hora más barata</span><strong title={electricityRange(cheapest)}>{electricityRange(cheapest, false)}</strong><small>{electricityPrice(cheapest.price)} €/kWh</small></div>
           <div className="dashboard-stat-card"><span>Hora más cara</span><strong title={electricityRange(highest)}>{electricityRange(highest, false)}</strong><small>{electricityPrice(highest.price)} €/kWh</small></div>
         </section>
+        <section className="electricity-panel">
+          <h2>Las 3 horas más baratas</h2>
+          <p>Para planificar el uso de los electrodomésticos. Pueden ser horas que ya han pasado.</p>
+          <ol className="electricity-cheapest">{ranked.slice(0, 3).map((hour) => <li key={hour.datetime}>
+            <span>{electricityRange(hour)}</span>
+            <strong>{electricityPrice(hour.price)} €/kWh</strong>
+          </li>)}</ol>
+        </section>
+        <section className="electricity-panel">
+          <h2>Precios por hora</h2>
+          <p>Hora de Madrid. Las tres horas más baratas llevan una estrella.</p>
+          <table className="electricity-table">
+            <caption className="visually-hidden">Precios de la energía PVPC en euros por kilovatio hora</caption>
+            <thead><tr><th scope="col">Hora</th><th scope="col">Precio €/kWh</th></tr></thead>
+            <tbody>{hours.map((hour) => {
+              const active = current?.datetime === hour.datetime;
+              const width = highest.price === cheapest.price ? 100 : 8 + 92 * (hour.price - cheapest.price) / (highest.price - cheapest.price);
+              return <tr key={hour.datetime} className={active ? 'electricity-active' : ''}>
+                <th scope="row">
+                  <span>{electricityTime(hour.datetime)} <small>UTC{hour.datetime.slice(-6)}</small></span>
+                  {active && <small> Ahora</small>}
+                  {cheapHours.has(hour.datetime) && <span aria-label="Una de las tres horas más baratas"> ★</span>}
+                </th>
+                <td><strong>{electricityPrice(hour.price)}</strong><span className="electricity-bar" aria-hidden="true" style={{ width: `${width}%` }} /></td>
+              </tr>;
+            })}</tbody>
+          </table>
+        </section>
       </>}
-      <footer className="electricity-source"><a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noreferrer">Red Eléctrica · PVPC</a> · Sin impuestos</footer>
+      <footer className="electricity-source">
+        <p>Fuente: <a href="https://www.esios.ree.es/es/pvpc" target="_blank" rel="noreferrer">Red Eléctrica · ESIOS</a>, a través de su API pública REData.</p>
+        <p>Precio del término de energía PVPC, sin impuestos. La factura incluye otros conceptos, como potencia y alquiler del contador. Si tenéis una tarifa de mercado libre, vuestro precio puede ser diferente.</p>
+      </footer>
     </div></main><BottomNav />
   </>;
 }
