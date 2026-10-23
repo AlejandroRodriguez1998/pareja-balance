@@ -54,8 +54,8 @@ html[data-theme="dark"] .electricity-tone-expensive { --price-color: #ff929c; }
 .electricity-active { background: var(--accent-secondary-surface); }
 .electricity-source a { color: var(--accent-secondary); }
 .electricity-page .dashboard-stat-card { min-width: 0; }
-.electricity-page .dashboard-stat-card strong { font-size: 1rem; }
-.electricity-page .dashboard-stat-card small { font-size: .7rem; color: var(--app-text-muted); }
+.electricity-page .dashboard-stat-card strong { font-size: clamp(1rem, 4.5vw, 1.4rem); }
+.electricity-page .dashboard-stat-card small { font-size: .8rem; color: var(--app-text-muted); }
 
 :root {
   --background: #ffffff;

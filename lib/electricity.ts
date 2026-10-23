@@ -40,10 +40,10 @@ export function electricityTime(datetime: string) {
   return new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit' }).format(new Date(datetime));
 }
 
-export function electricityRange(hour: ElectricityHour) {
+export function electricityRange(hour: ElectricityHour, showOffset = true) {
   const end = new Date(new Date(hour.datetime).getTime() + 3600000).toISOString();
   // Include UTC offset to distinguish the repeated hour when clocks change.
-  return `${electricityTime(hour.datetime)}–${electricityTime(end)} (${hour.datetime.slice(-6)})`;
+  return `${electricityTime(hour.datetime)}–${electricityTime(end)}${showOffset ? ` (${hour.datetime.slice(-6)})` : ''}`;
 }
 
 export function electricityPrice(price: number) {

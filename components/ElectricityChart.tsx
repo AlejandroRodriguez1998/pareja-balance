@@ -21,9 +21,8 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
 
   return <section className="electricity-panel electricity-chart" aria-labelledby={titleId}>
     <h2 id={titleId}>El precio de un vistazo</h2>
-    <p>Toca una barra para ver su precio. Desliza la gráfica para recorrer las horas.</p>
     <div className={`electricity-chart-detail electricity-tone-${status}`} aria-live="polite" aria-atomic="true">
-      <span>{electricityRange(selected)}{selected.datetime === current?.datetime ? ' · Ahora' : ''}</span>
+      <span title={electricityRange(selected)}>{electricityRange(selected, false)}{selected.datetime === current?.datetime ? ' · Ahora' : ''}</span>
       <strong>{electricityPrice(selected.price)} €/kWh · {electricityChartStatusLabels[status]}</strong>
     </div>
     <div className="electricity-chart-scroll" role="region" aria-label="Gráfica de precios por hora, desplazable" tabIndex={0}>
@@ -54,6 +53,5 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
       </svg>
     </div>
     <div className="electricity-chart-legend"><span className="electricity-tone-cheap">● Bajo</span><span className="electricity-tone-lower-medium">● Medio-bajo</span><span className="electricity-tone-upper-medium">● Medio-alto</span><span className="electricity-tone-expensive">● Alto</span><span>● Hora actual</span></div>
-    <p className="electricity-chart-note">Colores según los cuartiles de precios de hoy: cuatro grupos de menor a mayor precio, manteniendo los precios iguales en el mismo grupo. No indican una tarifa fija. En el cambio de hora, consulta el desfase UTC al seleccionar una barra.</p>
   </section>;
 }
