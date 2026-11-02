@@ -1,11 +1,28 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { electricityPrice, electricityRange, electricityChartStatus, electricityChartStatusLabels, electricityTime, type ElectricityHour } from '@/lib/electricity';
 
 export default function ElectricityChart({ hours, current }: { hours: ElectricityHour[]; current?: ElectricityHour }) {
   const titleId = useId();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const currentBarRef = useRef<SVGRectElement>(null);
+  const currentDatetime = current?.datetime;
+  useEffect(() => {
+    const container = scrollRef.current;
+    const bar = currentBarRef.current;
+    if (!container || !bar) return;
+    const centerCurrentHour = () => {
+      const containerBounds = container.getBoundingClientRect();
+      const barBounds = bar.getBoundingClientRect();
+      container.scrollLeft += barBounds.left + barBounds.width / 2 - containerBounds.left - container.clientWidth / 2;
+    };
+    centerCurrentHour();
+    const observer = new ResizeObserver(centerCurrentHour);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [currentDatetime, hours.length]);
   const selected = hours.find((hour) => hour.datetime === selectedTime) ?? current ?? hours[0];
   if (!selected) return null;
   const min = Math.min(0, ...hours.map((hour) => hour.price));
@@ -25,7 +42,7 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
       <span title={electricityRange(selected)}>{electricityRange(selected, false)}{selected.datetime === current?.datetime ? ' · Ahora' : ''}</span>
       <strong>{electricityPrice(selected.price)} €/kWh · {electricityChartStatusLabels[status]}</strong>
     </div>
-    <div className="electricity-chart-scroll" role="region" aria-label="Gráfica de precios por hora, desplazable" tabIndex={0}>
+    <div ref={scrollRef} className="electricity-chart-scroll" role="region" aria-label="Gráfica de precios por hora, desplazable" tabIndex={0}>
       <svg viewBox="0 0 760 295" className="electricity-chart-svg" role="group" aria-label="Precio PVPC por hora en euros por kilovatio hora">
         <text x={left} y={14} className="chart-axis-label">€/kWh</text>
         {[0, 1, 2, 3, 4].map((tick) => {
@@ -40,7 +57,7 @@ export default function ElectricityChart({ hours, current }: { hours: Electricit
           const label = `${electricityRange(hour)}: ${electricityPrice(hour.price)} euros por kWh. ${electricityChartStatusLabels[band]}${active ? '. Hora actual' : ''}`;
           const x = left + index * step + 3;
           return <g key={hour.datetime}>
-            <rect x={x} y={Math.min(y(hour.price), zero)} width={step - 6} height={Math.max(2, Math.abs(zero - y(hour.price)))} rx={3}
+            <rect ref={active ? currentBarRef : undefined} x={x} y={Math.min(y(hour.price), zero)} width={step - 6} height={Math.max(2, Math.abs(zero - y(hour.price)))} rx={3}
               className={`chart-price-bar electricity-tone-${band} ${chosen ? 'is-selected' : ''}`} role="button" tabIndex={0} aria-label={label} aria-pressed={chosen}
               onClick={() => setSelectedTime(hour.datetime)} onFocus={() => setSelectedTime(hour.datetime)}
               onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedTime(hour.datetime); } }}>
