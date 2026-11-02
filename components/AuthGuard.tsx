@@ -3,7 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
-import LoadingScreen from '@/components/LoadingScreen';
+import SectionLoader from '@/components/SectionLoader';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <LoadingScreen />
+      <SectionLoader />
     );
   }
 

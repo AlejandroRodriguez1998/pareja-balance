@@ -11,7 +11,7 @@ import TopNav from '@/components/TopNav';
 import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
 import type { SharedTask } from '@/lib/types';
-import LoadingScreen from '@/components/LoadingScreen';
+import SectionLoader from '@/components/SectionLoader';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<SharedTask[]>([]);
@@ -86,7 +86,7 @@ export default function TasksPage() {
     </article>
   );
 
-  if (loading) return <LoadingScreen message="Cargando tareas" />;
+  if (loading) return <SectionLoader label="Cargando tareas" />;
 
   return (
     <AuthGuard>

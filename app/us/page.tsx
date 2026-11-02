@@ -11,7 +11,7 @@ import TopNav from '@/components/TopNav';
 import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
 import type { CoupleData } from '@/lib/types';
-import LoadingScreen from '@/components/LoadingScreen';
+import SectionLoader from '@/components/SectionLoader';
 
 function getTimeTogether(dateValue?: string) {
   if (!dateValue) return null;
@@ -52,7 +52,7 @@ export default function UsPage() {
     return () => { unsubscribeAuth(); unsubscribeData?.(); };
   }, []);
 
-  if (loading) return <LoadingScreen message="Cargando lo vuestro" />;
+  if (loading) return <SectionLoader label="Cargando lo vuestro" />;
   const hasNames = data?.partnerOneName && data?.partnerTwoName;
 
   const completeCurrentPlan = async () => {

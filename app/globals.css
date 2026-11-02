@@ -1160,6 +1160,113 @@ body {
   }
 }
 
+.section-loader {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 20px 0 calc(122px + var(--safe-area-bottom));
+  background: var(--app-background);
+}
+
+.section-loader-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.section-loader-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.section-loader-hero {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--app-border);
+  border-radius: 20px;
+  background: var(--app-surface);
+}
+
+.section-loader-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.section-loader-list {
+  display: grid;
+  gap: 10px;
+}
+
+.section-loader-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: var(--app-surface);
+  animation: section-loader-in 0.4s ease both;
+}
+
+.section-loader-row-text {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+}
+
+.skeleton {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--app-surface-inset);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(110, 166, 255, 0.12), transparent);
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+.section-loader-hero .skeleton,
+.section-loader-row .skeleton {
+  background: var(--app-surface-raised);
+}
+
+.skeleton-title { width: 42%; height: 26px; border-radius: 10px; }
+.skeleton-circle { width: 40px; height: 40px; border-radius: 50%; }
+.skeleton-value { width: 55%; height: 38px; border-radius: 12px; }
+.skeleton-bar { width: 100%; height: 8px; border-radius: 999px; }
+.skeleton-card { height: 92px; border-radius: 18px; border: 1px solid var(--app-border); background: var(--app-surface); }
+.skeleton-avatar { width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; }
+.skeleton-line { height: 12px; }
+.skeleton-w-15 { width: 15%; }
+.skeleton-w-30 { width: 30%; }
+.skeleton-w-35 { width: 35%; }
+.skeleton-w-60 { width: 60%; }
+
+@keyframes skeleton-shimmer {
+  to { transform: translateX(100%); }
+}
+
+@keyframes section-loader-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after { animation: none; }
+  .section-loader-row { animation: none; }
+}
+
 .history-week-list {
   display: grid;
   gap: 12px;
