@@ -1665,7 +1665,10 @@ body {
 
 .us-view-switcher { margin-bottom: 0; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .us-view-switcher button { flex-wrap: nowrap; gap: 6px; padding: 10px 6px; font-size: .82rem; white-space: nowrap; min-width: 0; }
-.wish-filters { display: flex; flex-wrap: wrap; gap: 7px; margin: 16px 0; }
+.wish-filters { display: grid; gap: 8px; margin: 16px 0; }
+.wish-status-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.wish-owner-filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.wish-filters button { min-width: 0; }
 .wish-filters button { min-height: 38px; padding: 7px 12px; border: 1px solid var(--app-border); border-radius: 12px; background: var(--app-surface-inset); color: var(--app-text-muted); font-size: .8rem; font-weight: 750; overflow-wrap: anywhere; }
 .wish-filters button[aria-pressed="true"] { border-color: var(--bottom-nav-active); background: var(--bottom-nav-active-surface); color: var(--bottom-nav-active); }
 .wish-list { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
@@ -3304,5 +3307,17 @@ html[data-theme="light"] .text-light-50 {
   .theme-option,
   .favorite-action-option {
     transition: none;
+  }
+}
+
+/* Allow scrolling and pinch zoom without double-tap zoom. */
+html { touch-action: manipulation; }
+
+/* iOS zooms focused text controls when their font is smaller than 16px. */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]),
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }

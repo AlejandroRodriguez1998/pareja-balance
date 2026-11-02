@@ -66,7 +66,7 @@ export default function ShoppingItemModal({ item, pairId, onHide }: Props) {
         <Form onSubmit={(event) => { event.preventDefault(); void handleSave(); }}>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="shopping-item-name">Producto</Form.Label>
-            <Form.Control id="shopping-item-name" autoFocus value={name} onChange={(event) => setName(event.target.value)} disabled={saving} />
+            <Form.Control id="shopping-item-name" value={name} onChange={(event) => setName(event.target.value)} disabled={saving} />
           </Form.Group>
           <Form.Group>
             <Form.Label htmlFor="shopping-item-category">Categoría</Form.Label>

@@ -110,7 +110,7 @@ export default function CoupleVoting({ data }: { data: CoupleData }) {
         <Form id="create-couple-poll" className="voting-editor" onSubmit={(event) => { event.preventDefault(); void create(); }}>
           {error && <div className="alert alert-danger" role="alert">{error}</div>}
           {poll && <p className="activity-hint">Esta votación sustituirá a la actual.</p>}
-          <Form.Group controlId="poll-title"><Form.Label>¿Qué queréis decidir?</Form.Label><Form.Control autoFocus required maxLength={120} value={title} disabled={busy} placeholder="Por ejemplo, el plan del sábado" onChange={(event) => setTitle(event.target.value)} /></Form.Group>
+          <Form.Group controlId="poll-title"><Form.Label>¿Qué queréis decidir?</Form.Label><Form.Control required maxLength={120} value={title} disabled={busy} placeholder="Por ejemplo, el plan del sábado" onChange={(event) => setTitle(event.target.value)} /></Form.Group>
           <div className="voting-choices">
             <div className="voting-choices-heading"><span>Opciones</span><small>{options.length} de 4</small></div>
             {options.map((option, index) => <div className="poll-option-editor" key={index}>

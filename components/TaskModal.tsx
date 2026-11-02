@@ -94,7 +94,6 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
           <Form.Group className="mb-3">
             <Form.Label>Tarea</Form.Label>
             <Form.Control
-              autoFocus
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               placeholder="¿Qué hay que hacer?"

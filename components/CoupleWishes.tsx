@@ -19,6 +19,7 @@ function productUrl(value: string) {
 
 const CoupleWishes = forwardRef<CoupleWishesHandle, { data: CoupleData }>(function CoupleWishes({ data }, ref) {
   const [filter, setFilter] = useState('pending');
+  const [ownerFilter, setOwnerFilter] = useState<CoupleWish['owner'] | null>(null);
   const [show, setShow] = useState(false);
   const [editing, setEditing] = useState<CoupleWish | null>(null);
   const [title, setTitle] = useState('');
@@ -30,7 +31,7 @@ const CoupleWishes = forwardRef<CoupleWishesHandle, { data: CoupleData }>(functi
   const pending = useRef(false);
   const wishes = data.wishes || [];
   const labels = { one: data.partnerOneName || 'Primera persona', two: data.partnerTwoName || 'Segunda persona', both: 'Los dos' };
-  const visible = wishes.filter((wish) => filter === 'completed' ? wish.completed : !wish.completed && (filter === 'pending' || wish.owner === filter));
+  const visible = wishes.filter((wish) => wish.completed === (filter === 'completed') && (!ownerFilter || wish.owner === ownerFilter));
 
   function openEditor(wish?: CoupleWish) {
     setEditing(wish || null);
@@ -92,7 +93,10 @@ const CoupleWishes = forwardRef<CoupleWishesHandle, { data: CoupleData }>(functi
     <div className="calendar-heading"><div className="couple-card-heading"><span><Gift size={20} /><span id="couple-wishes-title">Deseos y regalos</span></span></div><button className="inline-action" type="button" disabled={busy} onClick={() => openEditor()}><Plus aria-hidden="true" /> Añadir deseo</button></div>
     <p className="activity-hint">Ideas para sorprenderos o daros un capricho juntos. Todo lo que guardéis aquí es visible para los dos.</p>
     {!show && error && <div className="alert alert-danger" role="alert">{error}</div>}
-    <div className="wish-filters" role="group" aria-label="Filtrar deseos">{[['pending', 'Pendientes'], ['one', labels.one], ['two', labels.two], ['both', labels.both], ['completed', 'Cumplidos']].map(([value, label]) => <button key={value} type="button" aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}</button>)}</div>
+    <div className="wish-filters">
+      <div className="wish-status-filters" role="group" aria-label="Estado de los deseos">{[['pending', 'Pendientes'], ['completed', 'Cumplidos']].map(([value, label]) => <button key={value} type="button" aria-pressed={filter === value} onClick={() => setFilter(value)}>{label}</button>)}</div>
+      <div className="wish-owner-filters" role="group" aria-label="Para quién es el deseo">{(['both', 'one', 'two'] as const).map((value) => <button key={value} type="button" aria-pressed={ownerFilter === value} onClick={() => setOwnerFilter((current) => current === value ? null : value)}>{labels[value]}</button>)}</div>
+    </div>
     {visible.length ? <ul className="wish-list">{visible.map((wish) => <li className={`wish-row${wish.completed ? ' is-completed' : ''}`} key={wish.id}>
       <button type="button" className="wish-toggle" disabled={busy} aria-label={`${wish.completed ? 'Marcar como pendiente' : 'Marcar como cumplido'}: ${wish.title}`} aria-pressed={wish.completed} onClick={() => void toggle(wish)}>{wish.completed ? <CheckCircleFill /> : <Circle />}</button>
       <div className="wish-content"><strong>{wish.title}</strong><small>{labels[wish.owner]}{wish.priceCents !== null ? ` · ${new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(wish.priceCents / 100)}` : ''}</small>{wish.url && productUrl(wish.url) && <a href={productUrl(wish.url)!} target="_blank" rel="noopener noreferrer">Ver enlace ↗</a>}</div>
@@ -102,7 +106,7 @@ const CoupleWishes = forwardRef<CoupleWishesHandle, { data: CoupleData }>(functi
       <Modal.Header closeButton={!busy}><Modal.Title>{editing ? 'Editar deseo' : 'Añadir deseo'}</Modal.Title></Modal.Header>
       <Form onSubmit={(event) => { event.preventDefault(); void save(); }}>
         <Modal.Body>{error && <div className="alert alert-danger" role="alert">{error}</div>}
-          <Form.Group controlId="wish-title" className="mb-3"><Form.Label>¿Qué os hace ilusión?</Form.Label><Form.Control autoFocus required maxLength={120} value={title} disabled={busy} onChange={(event) => setTitle(event.target.value)} placeholder="Un libro, una cena, una escapada…" /></Form.Group>
+          <Form.Group controlId="wish-title" className="mb-3"><Form.Label>¿Qué os hace ilusión?</Form.Label><Form.Control required maxLength={120} value={title} disabled={busy} onChange={(event) => setTitle(event.target.value)} placeholder="Un libro, una cena, una escapada…" /></Form.Group>
           <Form.Group controlId="wish-owner" className="mb-3"><Form.Label>Para quién</Form.Label><Form.Select value={owner} disabled={busy} onChange={(event) => setOwner(event.target.value as CoupleWish['owner'])}>{Object.entries(labels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</Form.Select></Form.Group>
           <Form.Group controlId="wish-price" className="mb-3"><Form.Label>Precio orientativo (€), opcional</Form.Label><Form.Control type="number" inputMode="decimal" min="0" max="1000000" step="0.01" value={price} disabled={busy} onChange={(event) => setPrice(event.target.value)} placeholder="0,00" /></Form.Group>
           <Form.Group controlId="wish-url"><Form.Label>Enlace, opcional</Form.Label><Form.Control type="url" maxLength={2000} value={url} disabled={busy} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /></Form.Group>

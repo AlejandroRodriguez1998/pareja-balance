@@ -102,7 +102,7 @@ export default function CoupleDataModal({ show, onHide, data = null, focusPlan =
           )}
           <div className="modal-section-label">Próximo plan</div>
           {suggestedPlan && data?.nextPlan?.title && <p>Al guardar, este plan sustituirá a «{data.nextPlan.title}» como próximo plan.</p>}
-          <Form.Group className="mb-2"><Form.Label>Plan</Form.Label><Form.Control autoFocus={focusPlan} value={planTitle} onChange={(e) => setPlanTitle(e.target.value)} placeholder="¿Qué os apetece hacer?" /></Form.Group>
+          <Form.Group className="mb-2"><Form.Label>Plan</Form.Label><Form.Control value={planTitle} onChange={(e) => setPlanTitle(e.target.value)} placeholder="¿Qué os apetece hacer?" /></Form.Group>
           <Form.Group className="mb-4"><Form.Label>Fecha y hora</Form.Label><Form.Control type="datetime-local" value={planDateTime} onChange={(e) => setPlanDateTime(e.target.value)} /></Form.Group>
           {!focusPlan && (
             <>

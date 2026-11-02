@@ -63,7 +63,6 @@ const ShoppingList = forwardRef<ShoppingListHandle, Props>(function ShoppingList
         createdBy: user.uid,
       });
       setName('');
-      requestAnimationFrame(() => inputRef.current?.focus());
     } catch (error) {
       console.error('Error adding shopping item:', error);
       alert('No se pudo añadir el producto.');
