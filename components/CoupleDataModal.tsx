@@ -1,15 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
 import type { CoupleData, CoupleGoal } from '@/lib/types';
 
-type Props = { show: boolean; onHide: () => void; data?: CoupleData | null; focusPlan?: boolean };
+type Props = { show: boolean; onHide: () => void; data?: CoupleData | null; focusPlan?: boolean; suggestedPlan?: string };
 
-export default function CoupleDataModal({ show, onHide, data = null, focusPlan = false }: Props) {
+export default function CoupleDataModal({ show, onHide, data = null, focusPlan = false, suggestedPlan }: Props) {
   const [partnerOneName, setPartnerOneName] = useState('');
   const [partnerTwoName, setPartnerTwoName] = useState('');
   const [relationshipStart, setRelationshipStart] = useState('');
@@ -18,17 +18,23 @@ export default function CoupleDataModal({ show, onHide, data = null, focusPlan =
   const [goals, setGoals] = useState<CoupleGoal[]>([]);
   const [newGoal, setNewGoal] = useState('');
   const [saving, setSaving] = useState(false);
+  const latestData = useRef(data);
+  const originalGoalIds = useRef(new Set<string>());
+
+  useEffect(() => { latestData.current = data; }, [data]);
 
   useEffect(() => {
     if (!show) return;
-    setPartnerOneName(data?.partnerOneName || '');
-    setPartnerTwoName(data?.partnerTwoName || '');
-    setRelationshipStart(data?.relationshipStart || '');
-    setPlanTitle(data?.nextPlan?.title || '');
-    setPlanDateTime(data?.nextPlan?.dateTime || '');
-    setGoals(data?.goals || []);
+    const initial = latestData.current;
+    originalGoalIds.current = new Set(initial?.goals?.map((goal) => goal.id));
+    setPartnerOneName(initial?.partnerOneName || '');
+    setPartnerTwoName(initial?.partnerTwoName || '');
+    setRelationshipStart(initial?.relationshipStart || '');
+    setPlanTitle(suggestedPlan || initial?.nextPlan?.title || '');
+    setPlanDateTime(suggestedPlan ? '' : initial?.nextPlan?.dateTime || '');
+    setGoals(initial?.goals || []);
     setNewGoal('');
-  }, [show, data]);
+  }, [show, suggestedPlan]);
 
   const addGoal = () => {
     if (!newGoal.trim()) return;
@@ -55,7 +61,22 @@ export default function CoupleDataModal({ show, onHide, data = null, focusPlan =
             goals,
             updatedAt: serverTimestamp(),
           };
-      await setDoc(doc(db, 'coupleData', pairId), payload, { merge: true });
+      if (focusPlan) await setDoc(doc(db, 'coupleData', pairId), payload, { merge: true });
+      else await runTransaction(db, async (transaction) => {
+        const reference = doc(db, 'coupleData', pairId);
+        const snapshot = await transaction.get(reference);
+        const current = snapshot.exists() ? snapshot.data() as CoupleData : null;
+        // Keep savings and contributions that may have changed while this editor was open.
+        const mergedGoals = goals.map((goal) => {
+          const latest = current?.goals?.find((item) => item.id === goal.id);
+          return latest ? { ...latest, title: goal.title, completed: goal.completed, completedAt: goal.completedAt || null } : goal;
+        });
+        const originalIds = originalGoalIds.current;
+        mergedGoals.push(...(current?.goals || []).filter((goal) => !originalIds.has(goal.id) && !mergedGoals.some((item) => item.id === goal.id)));
+        const patch = { ...payload, goals: mergedGoals };
+        if (snapshot.exists()) transaction.update(reference, patch);
+        else transaction.set(reference, patch);
+      });
       onHide();
     } catch (error) {
       console.error('Error saving couple data:', error);
@@ -80,6 +101,7 @@ export default function CoupleDataModal({ show, onHide, data = null, focusPlan =
             </>
           )}
           <div className="modal-section-label">Próximo plan</div>
+          {suggestedPlan && data?.nextPlan?.title && <p>Al guardar, este plan sustituirá a «{data.nextPlan.title}» como próximo plan.</p>}
           <Form.Group className="mb-2"><Form.Label>Plan</Form.Label><Form.Control autoFocus={focusPlan} value={planTitle} onChange={(e) => setPlanTitle(e.target.value)} placeholder="¿Qué os apetece hacer?" /></Form.Group>
           <Form.Group className="mb-4"><Form.Label>Fecha y hora</Form.Label><Form.Control type="datetime-local" value={planDateTime} onChange={(e) => setPlanDateTime(e.target.value)} /></Form.Group>
           {!focusPlan && (

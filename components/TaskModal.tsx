@@ -17,12 +17,16 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
   const [title, setTitle] = useState('');
   const [assignedTo, setAssignedTo] = useState<SharedTask['assignedTo']>('Ambos');
   const [saving, setSaving] = useState(false);
+  const [dueDate, setDueDate] = useState('');
+  const [repeat, setRepeat] = useState<NonNullable<SharedTask['repeat']>>('none');
   const savingRef = useRef(false);
 
   useEffect(() => {
     if (!show) return;
     setTitle(task?.title || '');
     setAssignedTo(task?.assignedTo || 'Ambos');
+    setDueDate(task?.dueDate || '');
+    setRepeat(task?.repeat || 'none');
   }, [show, task]);
 
   const closeIfIdle = () => {
@@ -38,7 +42,7 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
     setSaving(true);
     try {
       if (task) {
-        await updateDoc(doc(db, 'tasks', task.id), { title: title.trim(), assignedTo });
+        await updateDoc(doc(db, 'tasks', task.id), { title: title.trim(), assignedTo, dueDate, repeat, repeatDay: dueDate === task.dueDate ? task.repeatDay || Number(dueDate.slice(-2)) || 0 : Number(dueDate.slice(-2)) || 0 });
       } else {
         const pairId = await getUserPairId(user.uid);
         if (!pairId) throw new Error('No se encontró una pareja asociada.');
@@ -46,6 +50,9 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
           pairId,
           title: title.trim(),
           assignedTo,
+          dueDate,
+          repeat,
+          repeatDay: Number(dueDate.slice(-2)) || 0,
           completed: false,
           createdAt: serverTimestamp(),
           completedAt: null,
@@ -94,6 +101,8 @@ export default function TaskModal({ show, onHide, task = null }: Props) {
               disabled={saving}
             />
           </Form.Group>
+          <Form.Group controlId="task-due-date" className="mb-3"><Form.Label>Fecha límite, opcional</Form.Label><Form.Control type="date" value={dueDate} disabled={saving} onChange={(event) => setDueDate(event.target.value)} /></Form.Group>
+          <Form.Group controlId="task-repeat" className="mb-3"><Form.Label>Repetición</Form.Label><Form.Select value={repeat} disabled={saving} onChange={(event) => setRepeat(event.target.value as NonNullable<SharedTask['repeat']>)}><option value="none">No repetir</option><option value="daily">Cada día</option><option value="weekly">Cada semana</option><option value="monthly">Cada mes</option></Form.Select><Form.Text>Al completarla se creará la siguiente tarea.</Form.Text></Form.Group>
           <Form.Group>
             <Form.Label>Asignada a</Form.Label>
             <div className="task-assignee-picker" role="group" aria-label="Persona asignada">

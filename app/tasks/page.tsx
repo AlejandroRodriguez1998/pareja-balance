@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, runTransaction, serverTimestamp, where } from 'firebase/firestore';
 import { Check2Circle, Circle, PersonFill } from 'react-bootstrap-icons';
 import AuthGuard from '@/components/AuthGuard';
 import BottomNav from '@/components/BottomNav';
@@ -12,12 +12,15 @@ import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
 import type { SharedTask } from '@/lib/types';
 import SectionLoader from '@/components/SectionLoader';
+import { nextTaskDate } from '@/lib/taskDates';
+import { dateKey } from '@/lib/coupleCalendar';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<SharedTask[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [selectedTask, setSelectedTask] = useState<SharedTask | null>(null);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState<string[]>([]);
 
   useEffect(() => {
     let unsubscribeTasks: (() => void) | undefined;
@@ -53,19 +56,33 @@ export default function TasksPage() {
     return () => { cancelled = true; unsubscribeAuth(); unsubscribeTasks?.(); };
   }, []);
 
-  const pending = useMemo(() => tasks.filter((task) => !task.completed), [tasks]);
+  const pending = useMemo(() => tasks.filter((task) => !task.completed).sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999')), [tasks]);
   const completed = useMemo(() => tasks.filter((task) => task.completed), [tasks]);
 
   const toggleTask = async (task: SharedTask) => {
+    setUpdating((current) => [...current, task.id]);
     try {
-      await updateDoc(doc(db, 'tasks', task.id), {
-        completed: !task.completed,
-        completedAt: task.completed ? null : serverTimestamp(),
+      await runTransaction(db, async (transaction) => {
+        const reference = doc(db, 'tasks', task.id);
+        const snapshot = await transaction.get(reference);
+        if (!snapshot.exists()) return;
+        const current = snapshot.data() as SharedTask;
+        if (current.completed !== task.completed) return;
+        // A deterministic ID prevents duplicate occurrences when both people complete a task.
+        if (!current.completed && current.repeat && current.repeat !== 'none') {
+          const repeatDay = current.repeatDay || Number(current.dueDate?.slice(-2)) || new Date().getDate();
+          const nextDate = nextTaskDate(current.dueDate || '', current.repeat, undefined, repeatDay);
+          const nextId = `${task.id.split('__next__')[0]}__next__${nextDate}`;
+          const nextReference = doc(db, 'tasks', nextId);
+          const nextSnapshot = await transaction.get(nextReference);
+          if (!nextSnapshot.exists()) transaction.set(nextReference, { pairId: current.pairId, title: current.title, assignedTo: current.assignedTo, dueDate: nextDate, repeat: current.repeat, repeatDay, completed: false, completedAt: null, createdAt: serverTimestamp() });
+        }
+        transaction.update(reference, { completed: !current.completed, completedAt: current.completed ? null : serverTimestamp() });
       });
     } catch (error) {
       console.error('Error toggling task:', error);
       alert('No se pudo actualizar la tarea.');
-    }
+    } finally { setUpdating((current) => current.filter((id) => id !== task.id)); }
   };
 
   const renderTask = (task: SharedTask) => (
@@ -75,6 +92,7 @@ export default function TasksPage() {
         className="task-toggle"
         aria-label={task.completed ? `Marcar ${task.title} como pendiente` : `Completar ${task.title}`}
         aria-pressed={task.completed}
+        disabled={updating.includes(task.id)}
         onClick={() => toggleTask(task)}
       >
         {task.completed ? <Check2Circle size={24} /> : <Circle size={24} />}
@@ -82,6 +100,8 @@ export default function TasksPage() {
       <button type="button" className="task-copy" onClick={() => setSelectedTask(task)}>
         <strong>{task.title}</strong>
         <span><PersonFill size={12} aria-hidden="true" /> {task.assignedTo}</span>
+        {task.dueDate && <span className={!task.completed && task.dueDate < dateKey(new Date()) ? 'task-overdue' : ''}>{!task.completed && task.dueDate < dateKey(new Date()) ? 'Vencida · ' : ''}{new Date(`${task.dueDate}T12:00:00`).toLocaleDateString('es-ES')}</span>}
+        {task.repeat && task.repeat !== 'none' && <span>↻ {({ daily: 'Cada día', weekly: 'Cada semana', monthly: 'Cada mes' })[task.repeat]}</span>}
       </button>
     </article>
   );

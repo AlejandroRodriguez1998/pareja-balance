@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { arrayUnion, doc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { CalendarHeart, Check2Circle, Circle, ClockHistory, HeartFill, PencilFill, Stars } from 'react-bootstrap-icons';
+import { CalendarHeart, ChatHeart, Check2Circle, Circle, ClockHistory, Gift, HeartFill, PencilFill, Stars } from 'react-bootstrap-icons';
 import AuthGuard from '@/components/AuthGuard';
 import BottomNav from '@/components/BottomNav';
 import CoupleDataModal from '@/components/CoupleDataModal';
@@ -12,6 +12,18 @@ import { auth, db } from '@/lib/firebase';
 import { getUserPairId } from '@/lib/pairs';
 import type { CoupleData } from '@/lib/types';
 import SectionLoader from '@/components/SectionLoader';
+import CoupleActivities from '@/components/CoupleActivities';
+import CoupleCalendar, { type CoupleCalendarHandle } from '@/components/CoupleCalendar';
+import CoupleWishes, { type CoupleWishesHandle } from '@/components/CoupleWishes';
+import CoupleSavings from '@/components/CoupleSavings';
+
+const US_VIEWS = [
+  { id: 'overview', label: 'Lo nuestro', Icon: HeartFill },
+  { id: 'activities', label: 'Juntos', Icon: ChatHeart },
+  { id: 'calendar', label: 'Calendario', Icon: CalendarHeart },
+  { id: 'wishes', label: 'Deseos', Icon: Gift },
+] as const;
+type UsView = typeof US_VIEWS[number]['id'];
 
 function getTimeTogether(dateValue?: string) {
   if (!dateValue) return null;
@@ -30,7 +42,11 @@ export default function UsPage() {
   const [data, setData] = useState<CoupleData | null>(null);
   const [showEdit, setShowEdit] = useState(false);
   const [showPlan, setShowPlan] = useState(false);
+  const [suggestedPlan, setSuggestedPlan] = useState<string>();
   const [loading, setLoading] = useState(true);
+  const [activeView, setActiveView] = useState<UsView>('overview');
+  const calendarRef = useRef<CoupleCalendarHandle>(null);
+  const wishesRef = useRef<CoupleWishesHandle>(null);
   const together = useMemo(() => getTimeTogether(data?.relationshipStart), [data?.relationshipStart]);
   const pendingGoals = useMemo(() => data?.goals?.filter((goal) => !goal.completed) || [], [data?.goals]);
   const completedGoals = useMemo(() => data?.goals?.filter((goal) => goal.completed) || [], [data?.goals]);
@@ -77,9 +93,30 @@ export default function UsPage() {
 
   return (
     <AuthGuard>
-      <TopNav title="Nosotros" onAddClick={() => setShowPlan(true)} />
+      <TopNav title="Nosotros" onAddClick={() => {
+        if (activeView === 'calendar') calendarRef.current?.addDate();
+        else if (activeView === 'wishes') wishesRef.current?.addWish();
+        else { setSuggestedPlan(undefined); setShowPlan(true); }
+      }} />
       <main className="dashboard-shell">
         <div className="container dashboard-container us-page">
+          <div className="meals-view-switcher us-view-switcher" role="tablist" aria-label="Secciones de nosotros">
+            {US_VIEWS.map(({ id, label, Icon }, index) => <button
+              key={id} id={`us-tab-${id}`} type="button" role="tab"
+              aria-selected={activeView === id} aria-controls={`us-panel-${id}`}
+              tabIndex={activeView === id ? 0 : -1}
+              className={activeView === id ? 'is-active' : ''}
+              onClick={() => setActiveView(id)}
+              onKeyDown={(event) => {
+                const next = event.key === 'ArrowRight' ? (index + 1) % US_VIEWS.length : event.key === 'ArrowLeft' ? (index + US_VIEWS.length - 1) % US_VIEWS.length : event.key === 'Home' ? 0 : event.key === 'End' ? US_VIEWS.length - 1 : -1;
+                if (next < 0) return;
+                event.preventDefault();
+                setActiveView(US_VIEWS[next].id);
+                document.getElementById(`us-tab-${US_VIEWS[next].id}`)?.focus();
+              }}
+            ><Icon aria-hidden="true" />{label}</button>)}
+          </div>
+          <div id="us-panel-overview" role="tabpanel" aria-labelledby="us-tab-overview" hidden={activeView !== 'overview'} className="us-tab-panel" tabIndex={0}>
           <section className="couple-hero">
             <button type="button" className="couple-edit-button" onClick={() => setShowEdit(true)} aria-label="Editar información de la pareja"><PencilFill size={17} aria-hidden="true" /></button>
             <HeartFill className="couple-heart" size={30} aria-hidden="true" />
@@ -96,6 +133,7 @@ export default function UsPage() {
               {pendingGoals.length ? <div className="couple-goals">{pendingGoals.map((goal) => <div key={goal.id}><Circle /><span>{goal.title}</span></div>)}</div> : <div className="compact-empty"><p>No tenéis objetivos pendientes.</p><button type="button" className="inline-action" onClick={() => setShowEdit(true)}>Añadir objetivo</button></div>}
             </article>
           </section>
+          {data?.pairId && <CoupleSavings data={data} />}
           <section className="couple-history" aria-labelledby="couple-history-title">
             <div className="section-heading">
               <div><span className="section-kicker">Recuerdos compartidos</span><h2 id="couple-history-title">Lo que ya hemos conseguido</h2></div>
@@ -118,10 +156,20 @@ export default function UsPage() {
               </div>
             ) : <div className="empty-state"><p>Los planes realizados y objetivos conseguidos aparecerán aquí.</p></div>}
           </section>
+          </div>
+          <div id="us-panel-activities" role="tabpanel" aria-labelledby="us-tab-activities" hidden={activeView !== 'activities'} className="us-tab-panel" tabIndex={0}>
+            {data?.pairId ? <CoupleActivities key={data.pairId} data={data} onChoosePlan={(title) => { setSuggestedPlan(title); setShowPlan(true); }} /> : <div className="empty-state">No se encontró una pareja asociada.</div>}
+          </div>
+          <div id="us-panel-calendar" role="tabpanel" aria-labelledby="us-tab-calendar" hidden={activeView !== 'calendar'} className="us-tab-panel" tabIndex={0}>
+            {data?.pairId ? <CoupleCalendar ref={calendarRef} key={`calendar-${data.pairId}`} data={data} /> : <div className="empty-state">No se encontró una pareja asociada.</div>}
+          </div>
+          <div id="us-panel-wishes" role="tabpanel" aria-labelledby="us-tab-wishes" hidden={activeView !== 'wishes'} className="us-tab-panel" tabIndex={0}>
+            {data?.pairId ? <CoupleWishes ref={wishesRef} key={`wishes-${data.pairId}`} data={data} /> : <div className="empty-state">No se encontró una pareja asociada.</div>}
+          </div>
         </div>
       </main>
       <CoupleDataModal show={showEdit} data={data} onHide={() => setShowEdit(false)} />
-      <CoupleDataModal show={showPlan} data={data} focusPlan onHide={() => setShowPlan(false)} />
+      <CoupleDataModal show={showPlan} data={data} focusPlan suggestedPlan={suggestedPlan} onHide={() => { setShowPlan(false); setSuggestedPlan(undefined); }} />
       <BottomNav />
     </AuthGuard>
   );

@@ -4,6 +4,9 @@ export type SharedTask = {
   title: string;
   assignedTo: 'Alejandro' | 'Mario' | 'Ambos';
   completed: boolean;
+  dueDate?: string;
+  repeat?: 'none' | 'daily' | 'weekly' | 'monthly';
+  repeatDay?: number;
   createdAt?: { seconds: number } | Date | null;
   completedAt?: { seconds: number } | Date | null;
 };
@@ -39,13 +42,34 @@ export type CoupleGoal = {
   title: string;
   completed: boolean;
   completedAt?: string | null;
+  targetCents?: number;
+  targetDate?: string;
+  contributions?: { id: string; amountCents: number; author: string; date: string }[];
 };
+
 
 export type CouplePlan = {
   id: string;
   title: string;
   dateTime?: string;
   completedAt: string;
+};
+
+export type CoupleDate = {
+  id: string;
+  title: string;
+  date: string;
+  yearly: boolean;
+  reminderDays?: number;
+};
+
+export type CoupleWish = {
+  id: string;
+  title: string;
+  owner: 'one' | 'two' | 'both';
+  priceCents: number | null;
+  url: string;
+  completed: boolean;
 };
 
 export type CoupleData = {
@@ -59,4 +83,20 @@ export type CoupleData = {
   } | null;
   goals?: CoupleGoal[];
   planHistory?: CouplePlan[];
+  dates?: CoupleDate[];
+  wishes?: CoupleWish[];
+  questionHistory?: Record<string, NonNullable<CoupleData['dailyQuestion']>>;
+  dailyQuestion?: {
+    day: string;
+    question: string;
+    answers: Record<string, string>;
+  };
+  poll?: {
+    id: string;
+    title: string;
+    options: string[];
+    votes: Record<string, number>;
+    secret?: boolean;
+    commitments?: Record<string, string>;
+  };
 };
