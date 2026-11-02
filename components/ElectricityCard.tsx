@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'react-bootstrap-icons';
-import { electricityPrice, electricityStatus, electricityStatusLabels } from '@/lib/electricity';
+import { electricityCents, electricityPriceLevelLabels, electricityStatus } from '@/lib/electricity';
 import { useElectricity } from '@/lib/useElectricity';
 
 export default function ElectricityCard() {
@@ -13,9 +13,8 @@ export default function ElectricityCard() {
       <span className="traffic-red" /><span className="traffic-amber" /><span className="traffic-green" />
     </span>
     <div>
-      <strong>Luz{status ? ` · ${electricityStatusLabels[status]}` : ''}</strong>
-      <small>{current ? `${electricityPrice(current.price)} €/kWh ahora` : loading && !error ? 'Consultando precio actual…' : 'Precio actual no disponible'}</small>
-      <small className="electricity-card-hint">{status ? 'Comparado con las horas de hoy · PVPC' : 'Ver precios por hora · PVPC'}</small>
+      <strong>Luz{status ? ` · ${electricityPriceLevelLabels[status]}` : ''}</strong>
+      <small>{current ? `${electricityCents(current.price)} cént/kWh ahora` : loading && !error ? 'Consultando precio actual…' : 'Precio actual no disponible'}</small>
     </div>
     <ArrowRight aria-hidden="true" />
   </Link>;
