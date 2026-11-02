@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
+import AppSplash from '@/components/AppSplash';
 
 export const metadata = {
   title: 'Pareja Balance',
@@ -47,7 +48,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       </head>
-      <body>{children}</body>
+      <body>
+        <AppSplash />
+        {children}
+      </body>
     </html>
   );
 }
