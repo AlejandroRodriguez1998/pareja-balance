@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,25 +22,7 @@ export default function HomePage() {
   }, [router]);
 
   if (loading) {
-    return (
-      <div className="app-loading-screen">
-        <div className="app-loading-card">
-          <img
-            src="/icon-96x96.png"
-            alt="Logo"
-            width="80"
-            height="80"
-            className="app-loading-logo"
-          />
-
-          <h4>Pareja Balance</h4>
-
-          <p>Bienvenido de nuevo</p>
-
-          <div className="spinner-border app-loading-spinner" role="status"></div>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Bienvenido de nuevo" />;
   }
 
   return (

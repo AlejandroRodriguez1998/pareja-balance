@@ -12,6 +12,7 @@ import EditExpenseModal from '@/components/EditExpenseModal';
 import { ArrowRight, Check2Square, EggFried, HeartFill, Receipt, Wallet2 } from 'react-bootstrap-icons';
 import ElectricityCard from '@/components/ElectricityCard';
 import type { CoupleData, SharedTask } from '@/lib/types';
+import LoadingScreen from '@/components/LoadingScreen';
 
 type Expense = {
   id: string;
@@ -156,9 +157,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="app-loading-screen">
-        <div className="spinner-border app-loading-spinner" role="status"></div>
-      </div>
+      <LoadingScreen message="Preparando tu balance" />
     );
   }
 

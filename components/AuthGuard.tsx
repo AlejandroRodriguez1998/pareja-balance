@@ -3,6 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -23,9 +24,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="app-loading-screen">
-        <div className="spinner-border app-loading-spinner" role="status"></div>
-      </div>
+      <LoadingScreen />
     );
   }
 

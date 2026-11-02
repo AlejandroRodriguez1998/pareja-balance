@@ -13,6 +13,7 @@ import { EXPENSE_CATEGORIES, EXPENSE_CATEGORY_COLORS, inferExpenseCategory, type
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import LoadingScreen from '@/components/LoadingScreen';
 
 dayjs.extend(isoWeek);
 dayjs.locale('es');
@@ -175,9 +176,7 @@ export default function HistoryPage() {
 
   if (loading) {
     return (
-      <div className="app-loading-screen">
-        <div className="spinner-border app-loading-spinner" role="status"></div>
-      </div>
+      <LoadingScreen message="Cargando historial" />
     );
   }
 

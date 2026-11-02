@@ -11,6 +11,7 @@ import AddMealModal from '@/components/AddMealModal';
 import EditMealModal from '@/components/EditMealModal';
 import ShoppingList, { type ShoppingListHandle } from '@/components/ShoppingList';
 import { Basket2, EggFried } from 'react-bootstrap-icons';
+import LoadingScreen from '@/components/LoadingScreen';
 
 type Meal = {
   id: string;
@@ -112,9 +113,7 @@ export default function MealsPage() {
 
   if (loading) {
     return (
-      <div className="app-loading-screen">
-        <div className="spinner-border app-loading-spinner" role="status"></div>
-      </div>
+      <LoadingScreen message="Cargando comidas" />
     );
   }
 
