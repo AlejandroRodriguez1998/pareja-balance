@@ -1,0 +1,3 @@
+* {box-sizing: border-box;}
+body {margin: 0; -webkit-font-smoothing: antialiased;}
+.video-brand {display: block; width: 100%; height: 100%;}

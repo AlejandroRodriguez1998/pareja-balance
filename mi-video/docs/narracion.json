@@ -1,0 +1,10 @@
+[
+  {"id":"intro","file":"voiceover/01-intro.mp3","fromSeconds":1.8,"durationSeconds":4,"text":"Compartir la vida es fácil. Organizarla juntos, ahora también."},
+  {"id":"presentacion","file":"voiceover/02-presentacion.mp3","fromSeconds":6.5,"durationSeconds":4,"text":"Pareja Balance. Gastos, comidas, tareas y planes, en un mismo lugar."},
+  {"id":"gastos","file":"voiceover/03-gastos.mp3","fromSeconds":11.7,"durationSeconds":5.6,"text":"Registrad los gastos y consultad vuestro saldo de un vistazo. Las cuentas, claras."},
+  {"id":"comidas","file":"voiceover/04-comidas.mp3","fromSeconds":18.7,"durationSeconds":5.6,"text":"Lo de hoy, resuelto. Y lo de mañana, pensado. Planificad vuestras comidas."},
+  {"id":"tareas","file":"voiceover/05-tareas.mp3","fromSeconds":25.7,"durationSeconds":5.6,"text":"Repartid las tareas y marcad lo que ya está hecho. Entre los dos."},
+  {"id":"planes","file":"voiceover/06-planes.mp3","fromSeconds":32.7,"durationSeconds":5.6,"text":"Guardad vuestro próximo plan y avanzad juntos hacia vuestros objetivos."},
+  {"id":"experiencia","file":"voiceover/07-experiencia.mp3","fromSeconds":39.6,"durationSeconds":13.7,"text":"Una lista de la compra para los dos. Vuestra semana, de un vistazo. Y todo a mano, desde el móvil o el ordenador. Con tema claro u oscuro."},
+  {"id":"cierre","file":"voiceover/08-cierre.mp3","fromSeconds":54.6,"durationSeconds":4.8,"text":"Pareja Balance. Más equilibrio, menos complicaciones. Descubrid la aplicación."}
+]

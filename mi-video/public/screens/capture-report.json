@@ -1,0 +1,94 @@
+{
+  "errors": [],
+  "crops": {
+    "balance-card": {
+      "x": 16,
+      "y": 74,
+      "width": 398,
+      "height": 213.359375
+    },
+    "week-card": {
+      "x": 16,
+      "y": 393.796875,
+      "width": 398,
+      "height": 276.046875
+    },
+    "expense-modal": {
+      "x": 0,
+      "y": 387.28125,
+      "width": 430,
+      "height": 512.71875
+    },
+    "today-card": {
+      "x": 16,
+      "y": 142,
+      "width": 398,
+      "height": 151
+    },
+    "tomorrow-card": {
+      "x": 16,
+      "y": 305,
+      "width": 398,
+      "height": 143.15625
+    },
+    "meals-week-card": {
+      "x": 16,
+      "y": 379.15625,
+      "width": 398,
+      "height": 521.046875
+    },
+    "tasks-card": {
+      "x": 16,
+      "y": 74,
+      "width": 398,
+      "height": 374.78125
+    },
+    "assignment-1": {
+      "x": 35,
+      "y": 155.5,
+      "width": 360,
+      "height": 86.09375
+    },
+    "assignment-2": {
+      "x": 35,
+      "y": 249.59375,
+      "width": 360,
+      "height": 86.09375
+    },
+    "assignment-3": {
+      "x": 35,
+      "y": 343.6875,
+      "width": 360,
+      "height": 86.09375
+    },
+    "completed-card": {
+      "x": 16,
+      "y": 368.6875,
+      "width": 398,
+      "height": 280.6875
+    },
+    "plan-card": {
+      "x": 16,
+      "y": 372.109375,
+      "width": 398,
+      "height": 179.03125
+    },
+    "savings-card": {
+      "x": 16,
+      "y": 522.140625,
+      "width": 398,
+      "height": 377.75
+    }
+  },
+  "source": "Original React pages + original CSS; isolated local fixture data",
+  "date": "2026-11-10",
+  "mobileViewport": [
+    430,
+    900
+  ],
+  "desktopViewport": [
+    1440,
+    960
+  ],
+  "deviceScaleFactor": 2
+}

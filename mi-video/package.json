@@ -1,0 +1,46 @@
+{
+  "name": "mi-video",
+  "version": "1.0.0",
+  "description": "Anuncio de Pareja Balance · 60 segundos · 1080p · 30 FPS",
+  "repository": {},
+  "license": "UNLICENSED",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.542",
+    "@remotion/fonts": "4.0.542",
+    "@remotion/media": "4.0.542",
+    "@remotion/transitions": "4.0.542",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.542"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.542",
+    "@types/react": "19.3.0",
+    "@types/web": "0.0.166",
+    "eslint": "10.12.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3",
+    "vite": "^6.4.1"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "render": "remotion render ParejaBalancePromo out/pareja-balance-1080p.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p --audio-bitrate=192k --concurrency=4",
+    "thumbnail": "remotion still ParejaBalanceThumbnail out/pareja-balance-youtube.png",
+    "music:prepare": "node scripts/prepare-music.mjs",
+    "capture:serve": "node scripts/capture-server.mjs",
+    "capture": "python3 scripts/capture.py",
+    "verify:studio": "python3 scripts/verify-studio.py",
+    "voiceover:prepare": "node scripts/prepare-voiceover.mjs",
+    "render:voiceover": "remotion render ParejaBalancePromo out/pareja-balance-con-locucion.mp4 --props=docs/voiceover.props.json --codec=h264 --crf=18 --pixel-format=yuv420p --audio-bitrate=192k --concurrency=4"
+  },
+  "allowScripts": {
+    "esbuild": false
+  }
+}

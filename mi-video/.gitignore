@@ -1,0 +1,19 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Installed agent skills are local tooling; their sources are in skills-lock.json.
+.agents/
+.claude/
+
+# Ignore the output video from Git but not videos you import into src/.
+out/*
+!out/pareja-balance-1080p.mp4
+!out/pareja-balance-youtube.png
+
+# Generated from the application stylesheet by the capture server.
+capture/app.css
+
+# Portfolio website references downloaded only for visual inspection.
+portfolio/
