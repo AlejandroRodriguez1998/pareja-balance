@@ -247,19 +247,6 @@ body {
   transform: scale(0.97);
 }
 
-.nav-icon-button-primary {
-  justify-self: end;
-  border-color: var(--bottom-nav-focus);
-  background: var(--accent-primary);
-  color: var(--accent-primary-contrast);
-}
-
-.nav-icon-button-primary:hover {
-  border-color: var(--accent-primary-hover);
-  background: var(--accent-primary-hover);
-  color: var(--accent-primary-contrast);
-}
-
 .bottom-nav-spacer {
   min-height: calc(114px + var(--safe-area-bottom));
 }
@@ -3159,19 +3146,6 @@ html[data-theme] .nav-icon-button {
   transition: background-color 160ms ease, transform 160ms var(--ease-out);
 }
 
-html[data-theme] .nav-icon-button-primary {
-  border: 0;
-  background: var(--heart-gradient);
-  color: #fff;
-  box-shadow: 0 8px 20px -6px rgba(255, 63, 88, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-html[data-theme] .nav-icon-button-primary:hover {
-  background: var(--heart-gradient);
-  color: #fff;
-  filter: brightness(1.08);
-}
-
 /* ---------- Tarjetas ---------- */
 
 html[data-theme] .balance-hero,
@@ -3498,6 +3472,267 @@ html[data-theme] .bottom-nav-link.is-featured.is-active {
 
 html[data-theme] .bottom-nav-link.is-featured:active .bottom-nav-icon-wrap {
   transform: scale(0.94);
+}
+
+/* ---------- Barra superior con marca ---------- */
+
+html[data-theme] .app-top-nav.top-nav-brand {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  height: 64px;
+  padding: 0 16px;
+  transition: box-shadow 220ms ease, background-color 220ms ease;
+}
+
+/* La línea de color solo aparece cuando el contenido pasa por debajo */
+html[data-theme] .app-top-nav.top-nav-brand::after {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+html[data-theme] .app-top-nav.top-nav-brand.is-scrolled {
+  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="light"] .app-top-nav.top-nav-brand.is-scrolled {
+  box-shadow: 0 14px 30px -22px rgba(15, 23, 42, 0.35);
+}
+
+html[data-theme] .app-top-nav.top-nav-brand.is-scrolled::after {
+  opacity: 0.75;
+}
+
+.top-nav-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.top-nav-logo {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--card-border);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(58, 218, 244, 0.22), transparent 60%),
+    radial-gradient(circle at 80% 90%, rgba(255, 63, 88, 0.2), transparent 60%),
+    var(--row-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.app-loading-mark.top-nav-logo-mark {
+  width: 34px;
+  height: 34px;
+  margin: 0;
+}
+
+/* En la barra el logo está quieto: la animación es solo para la pantalla de carga */
+.top-nav-logo-mark,
+.top-nav-logo-mark * {
+  animation: none !important;
+}
+
+.top-nav-heading {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.top-nav-eyebrow {
+  overflow: hidden;
+  color: var(--app-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+html[data-theme] .app-top-nav.top-nav-brand h5 {
+  font-size: 1.18rem;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-align: left;
+}
+
+/* Ajustes: círculo con el sombrero de Chopper y una pequeña insignia de engranaje */
+.top-nav-settings {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 179, 210, 0.35), transparent 62%),
+    linear-gradient(160deg, #e6f6ff, #bfe3fb);
+  box-shadow:
+    0 0 0 2px var(--app-background),
+    0 0 0 3.5px rgba(247, 106, 165, 0.75),
+    0 10px 20px -10px rgba(217, 67, 127, 0.8);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 180ms var(--ease-out, ease), box-shadow 180ms ease;
+}
+
+html[data-theme="dark"] .top-nav-settings {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 156, 196, 0.28), transparent 62%),
+    linear-gradient(160deg, #24364a, #16212e);
+}
+
+.top-nav-settings-hat {
+  width: 34px;
+  height: 34px;
+  margin-top: 1px;
+  transform-origin: 50% 85%;
+  filter: drop-shadow(0 2px 2px rgba(120, 20, 60, 0.25));
+  transition: transform 320ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+.top-nav-settings-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--app-background);
+  border-radius: 50%;
+  background: var(--app-surface);
+  color: var(--app-text-soft);
+  transition: transform 420ms var(--ease-out, ease);
+}
+
+.top-nav-settings:hover .top-nav-settings-hat {
+  transform: rotate(-10deg) translateY(-1px);
+}
+
+.top-nav-settings:hover .top-nav-settings-badge {
+  transform: rotate(90deg);
+}
+
+.top-nav-settings:active {
+  transform: scale(0.93);
+}
+
+.top-nav-settings:focus-visible {
+  outline: 3px solid var(--bottom-nav-focus);
+  outline-offset: 4px;
+}
+
+/* ---------- Botón flotante de añadir ---------- */
+
+.app-fab {
+  --fab-size: 58px;
+  --fab-nav-width: min(calc(100% - 24px), 560px);
+  --fab-nav-bottom: max(8px, var(--safe-area-bottom));
+  position: fixed;
+  /* Alineado con el borde derecho del menú inferior, justo por encima */
+  right: calc((100% - var(--fab-nav-width)) / 2 + 6px);
+  bottom: calc(var(--fab-nav-bottom) + 76px + 14px);
+  z-index: 1000;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: var(--heart-gradient, linear-gradient(140deg, #ff8a73 0%, #ff3f58 52%, #d6064f 100%));
+  color: #fff;
+  box-shadow:
+    0 16px 30px -10px rgba(255, 63, 88, 0.7),
+    0 4px 10px -4px rgba(200, 0, 74, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+  -webkit-tap-highlight-color: transparent;
+  animation: app-fab-enter 420ms cubic-bezier(0.2, 0.9, 0.3, 1.25) backwards;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 260ms ease, filter 160ms ease;
+}
+
+/* Halo suave que respira para invitar a pulsar, sin distraer */
+.app-fab-glow {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(14px);
+  opacity: 0.45;
+  animation: app-fab-breathe 3.2s ease-in-out infinite;
+}
+
+.app-fab-icon {
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.app-fab:hover {
+  filter: brightness(1.08);
+}
+
+.app-fab:active {
+  transform: scale(0.92);
+}
+
+.app-fab:focus-visible {
+  outline: 3px solid var(--bottom-nav-focus);
+  outline-offset: 3px;
+}
+
+/* Con el menú de acciones abierto, el + gira hasta una × y el botón se redondea */
+.app-fab.is-open {
+  border-radius: 50%;
+}
+
+.app-fab.is-open .app-fab-icon {
+  transform: rotate(135deg);
+}
+
+/* Que el último contenido de la página no quede tapado por el botón */
+body:has(.app-fab) .bottom-nav-spacer {
+  min-height: calc(172px + var(--safe-area-bottom));
+}
+
+@keyframes app-fab-enter {
+  from { opacity: 0; transform: translateY(14px) scale(0.6) rotate(-90deg); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes app-fab-breathe {
+  0%, 100% { opacity: 0.35; transform: scale(0.92); }
+  50% { opacity: 0.6; transform: scale(1.04); }
+}
+
+@media (min-width: 768px) {
+  .app-fab {
+    --fab-nav-width: min(calc(100% - 40px), 520px);
+    --fab-nav-bottom: calc(16px + var(--safe-area-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-fab,
+  .app-fab-glow,
+  .app-fab-icon,
+  .top-nav-settings,
+  .top-nav-settings-hat,
+  .top-nav-settings-badge {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* ---------- Botones y modales ---------- */
