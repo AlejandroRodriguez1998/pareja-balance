@@ -79,7 +79,7 @@ export default function TopNav({ title, onAddClick }: Props) {
         <button type="button" className="top-nav-settings" onClick={() => setShowSettings(true)} aria-label="Ajustes">
           <ChopperHat className="top-nav-settings-hat" />
           <span className="top-nav-settings-badge" aria-hidden="true">
-            <GearFill size={9} />
+            <GearFill size={7} />
           </span>
         </button>
       </nav>

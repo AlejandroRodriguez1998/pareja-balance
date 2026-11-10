@@ -3479,8 +3479,8 @@ html[data-theme] .bottom-nav-link.is-featured:active .bottom-nav-icon-wrap {
 html[data-theme] .app-top-nav.top-nav-brand {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-  height: 64px;
-  padding: 0 16px;
+  height: 54px;
+  padding: 0 14px;
   transition: box-shadow 220ms ease, background-color 220ms ease;
 }
 
@@ -3506,18 +3506,18 @@ html[data-theme] .app-top-nav.top-nav-brand.is-scrolled::after {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 9px;
 }
 
 .top-nav-logo {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   border: 1px solid var(--card-border);
-  border-radius: 13px;
+  border-radius: 10px;
   background:
     radial-gradient(circle at 30% 20%, rgba(58, 218, 244, 0.22), transparent 60%),
     radial-gradient(circle at 80% 90%, rgba(255, 63, 88, 0.2), transparent 60%),
@@ -3526,8 +3526,8 @@ html[data-theme] .app-top-nav.top-nav-brand.is-scrolled::after {
 }
 
 .app-loading-mark.top-nav-logo-mark {
-  width: 34px;
-  height: 34px;
+  width: 27px;
+  height: 27px;
   margin: 0;
 }
 
@@ -3541,13 +3541,13 @@ html[data-theme] .app-top-nav.top-nav-brand.is-scrolled::after {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0;
 }
 
 .top-nav-eyebrow {
   overflow: hidden;
   color: var(--app-text-muted);
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.2;
@@ -3557,18 +3557,18 @@ html[data-theme] .app-top-nav.top-nav-brand.is-scrolled::after {
 }
 
 html[data-theme] .app-top-nav.top-nav-brand h5 {
-  font-size: 1.18rem;
-  font-weight: 850;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   text-align: left;
 }
 
 /* Ajustes: círculo con el sombrero de Chopper y una pequeña insignia de engranaje */
 .top-nav-settings {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
@@ -3579,9 +3579,9 @@ html[data-theme] .app-top-nav.top-nav-brand h5 {
     radial-gradient(circle at 50% 38%, rgba(255, 179, 210, 0.35), transparent 62%),
     linear-gradient(160deg, #e6f6ff, #bfe3fb);
   box-shadow:
-    0 0 0 2px var(--app-background),
-    0 0 0 3.5px rgba(247, 106, 165, 0.75),
-    0 10px 20px -10px rgba(217, 67, 127, 0.8);
+    0 0 0 1.5px var(--app-background),
+    0 0 0 2.5px rgba(247, 106, 165, 0.75),
+    0 8px 16px -8px rgba(217, 67, 127, 0.8);
   -webkit-tap-highlight-color: transparent;
   transition: transform 180ms var(--ease-out, ease), box-shadow 180ms ease;
 }
@@ -3593,8 +3593,8 @@ html[data-theme="dark"] .top-nav-settings {
 }
 
 .top-nav-settings-hat {
-  width: 34px;
-  height: 34px;
+  width: 27px;
+  height: 27px;
   margin-top: 1px;
   transform-origin: 50% 85%;
   filter: drop-shadow(0 2px 2px rgba(120, 20, 60, 0.25));
@@ -3603,13 +3603,13 @@ html[data-theme="dark"] .top-nav-settings {
 
 .top-nav-settings-badge {
   position: absolute;
-  right: -3px;
-  bottom: -3px;
-  width: 18px;
-  height: 18px;
+  right: -4px;
+  bottom: -4px;
+  width: 15px;
+  height: 15px;
   display: grid;
   place-items: center;
-  border: 2px solid var(--app-background);
+  border: 1.5px solid var(--app-background);
   border-radius: 50%;
   background: var(--app-surface);
   color: var(--app-text-soft);
@@ -3817,6 +3817,11 @@ html[data-theme] .custom-modal-bg .modal-title {
 
 html[data-theme] .custom-modal-bg .modal-body {
   padding: 14px 22px;
+}
+
+/* Hojas sin pie (Configuración, menú de añadir…): la última opción respira y libra la barra de inicio de iOS */
+html[data-theme] .custom-modal-bg .modal-body:last-child {
+  padding-bottom: calc(28px + var(--safe-area-bottom));
 }
 
 html[data-theme] .custom-modal-bg .modal-footer {
