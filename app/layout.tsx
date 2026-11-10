@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import AppSplash from '@/components/AppSplash';
 import KeyboardInset from '@/components/KeyboardInset';
+import NativeGestures from '@/components/NativeGestures';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 
 const appFont = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-app', display: 'swap' });
@@ -14,9 +15,10 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Sin zoom, como una app nativa (el pellizco en iOS se bloquea en NativeGestures).
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: 'cover',
-  // En Android, el teclado encoge la página en vez de taparla.
-  interactiveWidget: 'resizes-content',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -64,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AppSplash />
         <KeyboardInset />
+        <NativeGestures />
         {children}
       </body>
     </html>

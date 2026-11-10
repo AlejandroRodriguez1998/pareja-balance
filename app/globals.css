@@ -183,7 +183,8 @@ html[data-theme="dark"] {
 }
 
 html, body {
-  overscroll-behavior-y: contain; /* evita rebote transparente en iOS */
+  /* Sin rebote ni "tirar para recargar": la app no se arrastra como una web */
+  overscroll-behavior: none;
   background: var(--app-background);
 }
 
@@ -3057,6 +3058,73 @@ html[data-theme] .section-loader {
 
 html[data-theme] .dashboard-shell {
   padding-top: 20px;
+}
+
+/* ---------- Sensación de app nativa ---------- */
+
+html {
+  /* Quita el zoom con doble toque y el retardo al pulsar */
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  /* Sin destello al tocar, sin menú de mantener pulsado y sin seleccionar texto por accidente */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable="true"] {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+img,
+svg {
+  -webkit-user-drag: none;
+}
+
+/* El anillo de foco solo con teclado, no tras tocar un botón */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* En pantallas táctiles, el hover se queda "pegado" tras tocar: se anula */
+@media (hover: none) {
+  html[data-theme] .expense-row:hover,
+  html[data-theme] .week-summary-card:hover,
+  html[data-theme] .history-link:hover {
+    background: var(--row-bg) !important;
+  }
+
+  html[data-theme] .week-summary-card.is-featured-meal:hover {
+    background: linear-gradient(120deg, rgba(58, 218, 244, 0.14), rgba(19, 126, 255, 0.06) 60%, transparent), var(--row-bg) !important;
+  }
+
+  html[data-theme] .week-summary-card.electricity-entry:hover {
+    background: var(--card-bg) !important;
+  }
+
+  html[data-theme] .history-link:hover svg,
+  html[data-theme] .custom-modal-bg .btn-close:hover,
+  .landing-feature:hover,
+  .landing-cta:hover svg {
+    transform: none;
+  }
+
+  html[data-theme] .quick-action-list button:hover,
+  html[data-theme] .custom-modal-bg .btn-secondary:hover {
+    background: var(--row-bg);
+  }
 }
 
 /* ---------- Barra superior ---------- */

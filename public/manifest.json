@@ -22,5 +22,9 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "lang": "es",
+  "display_override": [
+    "standalone"
   ]
 }
