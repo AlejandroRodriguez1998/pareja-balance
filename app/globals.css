@@ -266,7 +266,7 @@ body {
 .app-bottom-nav {
   position: fixed;
   left: 50%;
-  bottom: calc(20px + var(--safe-area-bottom));
+  bottom: max(8px, var(--safe-area-bottom));
   z-index: 1000;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
