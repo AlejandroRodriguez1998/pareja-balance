@@ -1,6 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './globals.css';
 import AppSplash from '@/components/AppSplash';
+import KeyboardInset from '@/components/KeyboardInset';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+
+const appFont = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-app', display: 'swap' });
 
 export const metadata = {
   title: 'Pareja Balance',
@@ -11,6 +15,8 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
+  // En Android, el teclado encoge la página en vez de taparla.
+  interactiveWidget: 'resizes-content',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -24,11 +30,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       document.documentElement.style.colorScheme = theme;
       const themeColor = document.querySelector('meta[name="theme-color"]');
       if (themeColor) themeColor.content = theme === 'dark' ? '#101318' : '#f4f6f8';
+      // La pantalla de carga solo aparece con la sesión iniciada (ver AppSplash).
+      document.documentElement.dataset.session = localStorage.getItem('pareja-balance-session') ? 'yes' : 'no';
     } catch (_) {}
   `;
 
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" className={appFont.variable} suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#101318" />
@@ -55,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <AppSplash />
+        <KeyboardInset />
         {children}
       </body>
     </html>

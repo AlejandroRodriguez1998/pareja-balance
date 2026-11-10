@@ -190,7 +190,7 @@ export default function DashboardPage() {
             <p className="balance-copy">
               {balance > 0 && 'Tu pareja te debe este importe.'}
               {balance < 0 && 'Le debes este importe a tu pareja.'}
-              {balance === 0 && 'Estais a mano por ahora.'}
+              {balance === 0 && 'Estáis a mano por ahora.'}
             </p>
           </section>
 
@@ -238,14 +238,14 @@ export default function DashboardPage() {
             <div className="section-heading">
               <div>
                 <span className="section-kicker">Actividad</span>
-                <h2>Ultimos gastos</h2>
+                <h2>Últimos gastos</h2>
               </div>
               <Receipt size={22} />
             </div>
 
             {lastExpenses.length === 0 ? (
               <div className="empty-state">
-                <p>Aun no hay gastos registrados.</p>
+                <p>Aún no hay gastos registrados.</p>
               </div>
             ) : (
               <div className="expense-list">

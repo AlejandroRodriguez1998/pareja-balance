@@ -187,7 +187,7 @@ export default function HistoryPage() {
         <div className="container dashboard-container">
           {!selectedWeek ? (
             <div className="empty-state">
-              <p>Aun no hay gastos registrados.</p>
+              <p>Aún no hay gastos registrados.</p>
             </div>
           ) : (
             <div className="expense-analysis-page">

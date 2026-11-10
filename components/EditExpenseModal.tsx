@@ -99,7 +99,7 @@ export default function EditExpenseModal({ show, onHide, expense }: Props) {
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label>Descripcion</Form.Label>
+            <Form.Label>Descripción</Form.Label>
             <Form.Control
               type="text"
               value={descripcion}

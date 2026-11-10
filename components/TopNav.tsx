@@ -57,7 +57,7 @@ export default function TopNav({ title, onAddClick }: Props) {
         <button
           className="nav-icon-button nav-icon-button-primary"
           onClick={onAddClick || handleDefaultAdd}
-          aria-label="Anadir"
+          aria-label="Añadir"
         >
           <Plus size={24} />
         </button>

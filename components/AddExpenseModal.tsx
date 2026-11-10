@@ -71,13 +71,13 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
   return (
     <Modal show={show} onHide={closeIfIdle} centered contentClassName="custom-modal-bg">
       <Modal.Header closeButton>
-        <Modal.Title>Anadir gasto</Modal.Title>
+        <Modal.Title>Añadir gasto</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label>Descripcion:</Form.Label>
+            <Form.Label>Descripción</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ejemplo: Supermercado"
@@ -88,7 +88,7 @@ export default function AddExpenseModal({ show, onHide }: { show: boolean; onHid
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Total:</Form.Label>
+            <Form.Label>Total</Form.Label>
             <Form.Control
               type="number"
               step="0.01"

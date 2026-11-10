@@ -1,23 +1,42 @@
 'use client';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
+import { ArrowLeft, Envelope, Eye, EyeSlash, Lock } from 'react-bootstrap-icons';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import BrandMark from '@/components/BrandMark';
+
+// Traduce los códigos de error de Firebase a mensajes que se entienden.
+function loginErrorMessage(error: unknown) {
+  const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
+  if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return 'El email o la contraseña no son correctos.';
+  if (code === 'auth/invalid-email') return 'Ese email no parece válido.';
+  if (code === 'auth/too-many-requests') return 'Demasiados intentos. Espera un momento y vuelve a probar.';
+  if (code === 'auth/network-request-failed') return 'No hay conexión. Comprueba tu Internet.';
+  return 'No se pudo iniciar sesión. Inténtalo de nuevo.';
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState(''); 
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const signIn = async () => {
+  const signIn = async (event: FormEvent) => {
+    event.preventDefault();
+    if (loading) return;
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
+      setError('');
+      await signInWithEmailAndPassword(auth, email.trim(), password);
       router.push('/dashboard');
     } catch (e: unknown) {
-      alert(e instanceof Error ? e.message : 'No se pudo iniciar sesión.');
-    } finally { setLoading(false); }
+      setError(loginErrorMessage(e));
+      setLoading(false);
+    }
   };
 
   /*const signUp = async () => {
@@ -31,36 +50,65 @@ export default function LoginPage() {
   };*/
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
-      <div className="card shadow-lg p-4 border-0 bg-dark text-white" style={{ width: '22rem' }}>
-        <h1 className="text-center mb-4 fw-semibold">Iniciar sesión</h1>
+    <div className="login-screen">
+      <Link href="/" className="login-back" aria-label="Volver a la portada"><ArrowLeft size={18} /></Link>
 
-        <input
-          type="email"
-          className="form-control mb-3 bg-secondary text-white border-0"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <form className="login-card" onSubmit={signIn} noValidate>
+        <BrandMark className="login-mark" />
+        <h1>Hola de nuevo</h1>
+        <p className="login-subtitle">Entra con vuestra cuenta de Pareja Balance.</p>
 
-        <input
-          type="password"
-          className="form-control mb-4 bg-secondary text-white border-0"
-          placeholder="Contraseña"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <label className="login-field">
+          <span>Email</span>
+          <span className="login-input">
+            <Envelope aria-hidden="true" />
+            <input
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              placeholder="tu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </span>
+        </label>
 
-        <button
-          disabled={loading}
-          onClick={signIn}
-          className="btn btn-primary w-100 fw-semibold"
-        >
-          Entrar
+        <label className="login-field">
+          <span>Contraseña</span>
+          <span className="login-input">
+            <Lock aria-hidden="true" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              required
+            />
+            <button
+              type="button"
+              className="login-toggle"
+              onClick={() => setShowPassword((value) => !value)}
+              aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            >
+              {showPassword ? <EyeSlash /> : <Eye />}
+            </button>
+          </span>
+        </label>
+
+        {error && <p className="login-error" role="alert">{error}</p>}
+
+        <button type="submit" className="login-submit" disabled={loading || !email || !password}>
+          {loading ? <><span className="login-spinner" aria-hidden="true" /> Entrando…</> : 'Entrar'}
         </button>
 
         {/* <button disabled={loading} onClick={signUp} className="btn btn-outline-light w-100 mt-2">
           Crear cuenta
         </button> */}
-      </div>
+      </form>
     </div>
   );
 }
